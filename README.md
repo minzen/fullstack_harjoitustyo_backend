@@ -1,7 +1,7 @@
 # Helsingin yliopiston Full Stack Web Development -kurssin harjoitustyö "Muistijäljet"
 
 Kts. https://courses.helsinki.fi/en/aytkt21010/129098202 ja https://github.com/fullstackopen-2019/misc/blob/master/projekti.md
-Tämä sovellus on rakennettu Full Stack Web Development -kurssille. Projekti on jaettu kahteen kahteen eri repositoryyn: toisessa Backend-toteutus ja toisessa Frontend.
+Tämä sovellus on rakennettu Full Stack Web Development -kurssille. Projekti on jaettu kahteen kolmeen eri repositoryyn: [ensimmäisessä Backend-toteutus](https://github.com/minzen/fullstack_harjoitustyo_backend) ja [toisessa normaali Frontend](https://github.com/minzen/fullstack_harjoitustyo_frontend) ja [kolmannessa](https://github.com/minzen/fullstackharjoitustyoreactnative) kokeellinen React Native -toteutus.
 
 ## Yleistä
 
