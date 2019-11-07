@@ -1,4 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server')
+const uuid = require('uuid/v1')
 
 let notes = [
   {
@@ -75,13 +76,40 @@ const typeDefs = gql`
     allNotes: [Note!]!
     findNote(id: String!): Note
   }
+
+  type Mutation {
+    addNote(
+      title: String!
+      content: String!
+      keywords: [String]
+      user: Int
+    ): Note
+  }
 `
 
 const resolvers = {
   Query: {
     notesCount: () => notes.length,
-    allNotes: () => notes,
+    allNotes: () => {
+      console.log('returning the notes', notes)
+      return notes
+    },
     findNote: (root, args) => notes.find(n => n.id === args.id)
+  },
+  Mutation: {
+    addNote: (root, args) => {
+      const note = {
+        id: uuid(),
+        title: args.title,
+        content: args.content,
+        keywords: args.keywords,
+        user: 123
+      }
+      console.log('Note to be added', note)
+      notes.push(note)
+      console.log('notes after the addition', notes)
+      return note
+    }
   }
 }
 
