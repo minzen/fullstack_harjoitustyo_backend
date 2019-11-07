@@ -31,3 +31,8 @@
 - Token-perustainen autentikointi: Login/logout
 - Tyylien käyttö
 - React Navigation käyttöön (https://facebook.github.io/react-native/docs/navigation)
+- Näytä vain kirjautuneen käyttäjän muistiinpanot
+- muistiinpanojen editointi ja poistaminen
+- suosikkien asettaminen
+- toteuta unit- ja e2e-testit
+-
