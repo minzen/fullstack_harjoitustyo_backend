@@ -78,6 +78,7 @@ const resolvers = {
   Mutation: {
     // TODO: Add user, change user operations
     // TODO: tests
+    // TODO: Add operations for changing and deleting existing notes
     addNote: async (root, args) => {
       const note = new Note({
         id: uuid(),
