@@ -12,6 +12,7 @@ const Note = require('./models/note')
 const mongoose = require('mongoose')
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
+const bcrypt = require('bcrypt')
 // const jwt = require('jsonwebtoken')
 // const JWT_SECRET = process.env.JWT_SECRET
 // const pubsub = new PubSub()
@@ -65,7 +66,7 @@ const typeDefs = gql`
     ): Note
     addUser(
       email: String!
-      passwordHash: String!
+      password: String!
       givenname: String
       surname: String
     ): User
@@ -103,13 +104,15 @@ const resolvers = {
       console.log(`Note ${note} saved.`)
       return note
     },
-
+    // The method takes care of creating new users
     addUser: async (root, args) => {
       console.log('addUser', args)
+      const saltRounds = 10
+      const passwordHash = await bcrypt.hash(args.password, saltRounds)
       const user = new User({
         id: uuid(),
         email: args.email,
-        passwordHash: args.passwordHash,
+        passwordHash: passwordHash,
         givenname: args.givenname,
         surname: args.surname
       })
