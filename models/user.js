@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const schema = new mongoose.Schema({
-  username: {
+  email: {
     type: String,
     required: true,
     unique: true,
@@ -13,11 +13,6 @@ const schema = new mongoose.Schema({
   },
   givenname: String,
   surname: String,
-  email: {
-    type: String,
-    required: true,
-    minlength: 4
-  },
   notes: [
     {
       type: mongoose.Schema.Types.ObjectId,

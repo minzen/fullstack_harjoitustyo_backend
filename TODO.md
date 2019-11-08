@@ -10,6 +10,8 @@
 - Token perustainen autentikointi
 - Käyttäjien rekisteröinti ja salasanojen hallinta
 - Testit
+- Subscriptionit
+- Tsekkaa, kuinka Apollo Server saadaan käyttämään https:ää
 
 ## Frontend
 
@@ -28,6 +30,7 @@
   - kirjautuminen
   - tietojen haku-näkymä (voi olla yhdistetty muistiinpanojen listaus -näkymään)
   - Käyttäjäprofiili
+  - Käyttäjätilin rekisteröinti-näkymä
 - Header ja menu
 - Token-perustainen autentikointi: Login/logout
 - Tyylien käyttö
@@ -36,3 +39,4 @@
 - muistiinpanojen editointi ja poistaminen
 - suosikkien asettaminen
 - toteuta unit- ja e2e-testit
+- Kuvien ja videoiden lisääminen dokumenttitietokantaan? Mieluummin ei, vaan tallennetaan ainoastaan linkkejä resursseihin ja kuvat esim. S3-bucketiin

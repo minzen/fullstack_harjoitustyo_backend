@@ -35,10 +35,10 @@ let users = []
 const typeDefs = gql`
   type User {
     id: ID!
-    username: String!
+    email: String!
+    passwordHash: String!
     givenname: String
     surname: String
-    email: String
   }
   type Note {
     id: ID!
@@ -47,14 +47,15 @@ const typeDefs = gql`
     keywords: [String]
     user: Int
   }
-
+  type Token {
+    value: String!
+  }
   type Query {
     notesCount: Int!
     usersCount: Int!
     allNotes: [Note!]!
     findNoteById(id: String!): Note
   }
-
   type Mutation {
     addNote(
       title: String!
@@ -62,6 +63,13 @@ const typeDefs = gql`
       keywords: [String]
       user: Int
     ): Note
+    addUser(
+      email: String!
+      passwordHash: String!
+      givenname: String
+      surname: String
+    ): User
+    login(email: String!, passwordHash: String!): Token
   }
 `
 
@@ -90,10 +98,30 @@ const resolvers = {
       try {
         await note.save()
       } catch (e) {
-        console.log('Error when saving the note')
+        console.log('Error when saving the note', e)
       }
       console.log(`Note ${note} saved.`)
       return note
+    },
+
+    addUser: async (root, args) => {
+      console.log('addUser', args)
+      const user = new User({
+        id: uuid(),
+        email: args.email,
+        passwordHash: args.passwordHash,
+        givenname: args.givenname,
+        surname: args.surname
+      })
+
+      try {
+        await user.save()
+      } catch (e) {
+        console.log('Error when saving the user', e)
+      }
+      console.log(`User ${user} created and saved.`)
+
+      return user
     }
   }
 }
