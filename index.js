@@ -1,59 +1,36 @@
-const { ApolloServer, gql } = require('apollo-server')
+const {
+  ApolloServer,
+  gql,
+  UserInputError,
+  AuthenticationError,
+  PubSub
+} = require('apollo-server')
+require('dotenv').config()
 const uuid = require('uuid/v1')
+const User = require('./models/user')
+const Note = require('./models/note')
+const mongoose = require('mongoose')
+mongoose.set('useFindAndModify', false)
+mongoose.set('useCreateIndex', true)
+// const jwt = require('jsonwebtoken')
+// const JWT_SECRET = process.env.JWT_SECRET
+// const pubsub = new PubSub()
 
-let notes = [
-  {
-    id: '1234512345-1234-1234-1234-1234512345',
-    title: 'testimuistiinpano',
-    content:
-      'Testimuistiinpano. Tässä on pituutta vähän enemmänkin ja halutaankin katsoa, mihin se johtaa. Lyheneekö tämä tarvittaessa vai joudutaanko hassuihin tilanteisiin, kun tekstit näyttävät oudoilta',
-    keywords: ['testi', 'muistiinpano', 'teksti'],
-    user: 123
-  },
-  {
-    id: '1234512345-1234-1234-1234-1234512346',
-    title: 'testilinkki',
-    content: 'http://www.example.com',
-    keywords: ['testi', 'linkki'],
-    user: 123
-  },
-  {
-    id: '1234512345-1234-1234-1234-1234512347',
-    title: 'testimuistiinpano 2',
-    content:
-      'Testaillaan taas. Tuleeko mieleen, miten tänne saisi helpoiten kuvia näkyviin?',
-    keywords: ['testi', 'teksti'],
-    user: 123
-  },
-  {
-    id: '1234512345-1234-1234-1234-1234512348',
-    title: 'testimuistiinpano 3',
-    content: 'Mitäs nyt?',
-    keywords: ['testi', 'teksti'],
-    user: 123
-  },
-  {
-    id: '1234512345-1234-1234-1234-1234512349',
-    title: 'testimuistiinpano 4',
-    content: 'Hilipatti pippaa',
-    keywords: ['testi', 'teksti', 'pippa'],
-    user: 123
-  },
-  {
-    id: '1234512345-1234-1234-1234-1234512350',
-    title: 'testimuistiinpano 5',
-    content: 'Hilipatti pippaa2',
-    keywords: ['testi', 'teksti', 'pippa2'],
-    user: 123
-  },
-  {
-    id: '1234512345-1234-1234-1234-1234512351',
-    title: 'testimuistiinpano 6',
-    content: 'Hilipatti pippaa3',
-    keywords: ['testi', 'teksti', 'pippa3'],
-    user: 123
-  }
-]
+const MONGODB_URI = process.env.MONGODB_URI
+console.log('connecting to ', MONGODB_URI)
+// Create a DB connection
+mongoose
+  .connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(console.log('connected to MongoDB'))
+  .catch(e => {
+    console.log('error when connecting to MongoDB', e.message)
+  })
+
+let notes = []
+let users = []
 
 const typeDefs = gql`
   type User {
@@ -73,8 +50,9 @@ const typeDefs = gql`
 
   type Query {
     notesCount: Int!
+    usersCount: Int!
     allNotes: [Note!]!
-    findNote(id: String!): Note
+    findNoteById(id: String!): Note
   }
 
   type Mutation {
@@ -89,25 +67,31 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    notesCount: () => notes.length,
+    notesCount: () => Note.collection.countDocuments(),
+    usersCount: () => User.collection.countDocuments(),
     allNotes: () => {
-      console.log('returning the notes', notes)
-      return notes
+      return Note.find({})
     },
-    findNote: (root, args) => notes.find(n => n.id === args.id)
+    findNoteById: (root, args) => Note.findById({ _id: args.id })
+    // TODO: Add queries for: getNotesByUser, getNotesByUserAndKeyword etc.
   },
   Mutation: {
-    addNote: (root, args) => {
-      const note = {
+    // TODO: Add user, change user operations
+    // TODO: tests
+    addNote: async (root, args) => {
+      const note = new Note({
         id: uuid(),
         title: args.title,
         content: args.content,
-        keywords: args.keywords,
-        user: 123
+        keywords: args.keywords
+        // TODO: user: ...
+      })
+      try {
+        await note.save()
+      } catch (e) {
+        console.log('Error when saving the note')
       }
-      console.log('Note to be added', note)
-      notes.push(note)
-      console.log('notes after the addition', notes)
+      console.log(`Note ${note} saved.`)
       return note
     }
   }

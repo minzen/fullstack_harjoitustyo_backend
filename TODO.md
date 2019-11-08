@@ -4,11 +4,12 @@
 
 - Datan haku GraphQL-API:sta
 - MongoDB:n alustaminen ja konfigurointi
-- Skeeman viimeistely
+- Skeeman viimeistely: User, Note - mitä muuta?
 - API-design
 - API:n kytkeminen MongoDB-tietokantaan
 - Token perustainen autentikointi
 - Käyttäjien rekisteröinti ja salasanojen hallinta
+- Testit
 
 ## Frontend
 
@@ -35,4 +36,3 @@
 - muistiinpanojen editointi ja poistaminen
 - suosikkien asettaminen
 - toteuta unit- ja e2e-testit
--
