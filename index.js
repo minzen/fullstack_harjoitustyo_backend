@@ -56,6 +56,7 @@ const typeDefs = gql`
     usersCount: Int!
     allNotes: [Note!]!
     findNoteById(id: String!): Note
+    allUsers: [User!]!
   }
   type Mutation {
     addNote(
@@ -81,7 +82,10 @@ const resolvers = {
     allNotes: () => {
       return Note.find({})
     },
-    findNoteById: (root, args) => Note.findById({ _id: args.id })
+    findNoteById: (root, args) => Note.findById({ _id: args.id }),
+    allUsers: () => {
+      return User.find({})
+    }
     // TODO: Add queries for: getNotesByUser, getNotesByUserAndKeyword etc.
   },
   Mutation: {
