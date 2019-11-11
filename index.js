@@ -59,7 +59,6 @@ const typeDefs = gql`
     usersCount: Int!
     allNotes: [Note!]
     findNoteById(id: String!): Note
-    allUsers: [User!]!
   }
   type Mutation {
     addNote(title: String!, content: String!, keywords: [String]): Note
@@ -86,16 +85,20 @@ const resolvers = {
       }
       return await Note.find({ user: currentUser }).populate('user')
     },
-    findNoteById: (root, args) => Note.findById({ _id: args.id }),
-    allUsers: () => {
-      return User.find({})
+    findNoteById: async (root, args, context) => {
+      const currentUser = context.currentUser
+      if (!currentUser) {
+        throw new AuthenticationError(NOT_AUTHENTICATED)
+      }
+      return await Note.findById({ _id: args.id, user: currentUser })
     }
-    // TODO: Add queries for: getNotesByUser, getNotesByUserAndKeyword etc.
+
+    // TODO: Add queries for: getNotesByUserAndKeyword etc.
   },
   Mutation: {
-    // TODO: Add user, change user operations
+    // TODO: change user operation
     // TODO: tests
-    // TODO: Add operations for changing and deleting existing notes
+    // TODO: Add operations for changing existing notes
     addNote: async (root, args, context) => {
       const currentUser = context.currentUser
       if (!currentUser) {
@@ -118,7 +121,6 @@ const resolvers = {
       return note
     },
     deleteNote: async (root, args, context) => {
-      // TODO: Check that the user is the owner of the note
       const currentUser = context.currentUser
       if (!currentUser) {
         throw new AuthenticationError(NOT_AUTHENTICATED)
