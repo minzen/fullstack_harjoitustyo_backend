@@ -17,6 +17,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const JWT_SECRET = process.env.JWT_SECRET
 // const pubsub = new PubSub()
+const NOT_AUTHENTICATED = 'not authenticated'
 
 const MONGODB_URI = process.env.MONGODB_URI
 console.log('connecting to ', MONGODB_URI)
@@ -47,7 +48,7 @@ const typeDefs = gql`
     title: String
     content: String!
     keywords: [String]
-    user: Int
+    user: User
   }
   type Token {
     value: String!
@@ -61,12 +62,8 @@ const typeDefs = gql`
     allUsers: [User!]!
   }
   type Mutation {
-    addNote(
-      title: String!
-      content: String!
-      keywords: [String]
-      user: Int
-    ): Note
+    addNote(title: String!, content: String!, keywords: [String]): Note
+    deleteNote(id: ID!): String
     addUser(
       email: String!
       password: String!
@@ -79,10 +76,11 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
+    me: (root, args, context) => context.currentUser,
     notesCount: () => Note.collection.countDocuments(),
     usersCount: () => User.collection.countDocuments(),
     allNotes: () => {
-      return Note.find({})
+      return Note.find({}).populate('user')
     },
     findNoteById: (root, args) => Note.findById({ _id: args.id }),
     allUsers: () => {
@@ -94,14 +92,19 @@ const resolvers = {
     // TODO: Add user, change user operations
     // TODO: tests
     // TODO: Add operations for changing and deleting existing notes
-    addNote: async (root, args) => {
+    addNote: async (root, args, context) => {
+      const currentUser = context.currentUser
+      if (!currentUser) {
+        throw new AuthenticationError(NOT_AUTHENTICATED)
+      }
       const note = new Note({
         id: uuid(),
         title: args.title,
         content: args.content,
-        keywords: args.keywords
-        // TODO: user: ...
-      })
+        keywords: args.keywords,
+        user: currentUser
+      }).populate('user')
+
       try {
         await note.save()
       } catch (e) {
@@ -109,6 +112,28 @@ const resolvers = {
       }
       console.log(`Note ${note} saved.`)
       return note
+    },
+    deleteNote: async (root, args, context) => {
+      // TODO: Check that the user is the owner of the note
+      const currentUser = context.currentUser
+      if (!currentUser) {
+        throw new AuthenticationError(NOT_AUTHENTICATED)
+      }
+
+      const idOfNoteToDelete = args.id
+      try {
+        const deleted = await Note.findByIdAndDelete(idOfNoteToDelete)
+        console.log('deleted', deleted)
+        if (deleted) {
+          console.log(`note with the id ${idOfNoteToDelete} deleted`)
+          return idOfNoteToDelete
+        } else {
+          console.log('not deleted')
+        }
+      } catch (e) {
+        console.log('error when deleting an item', idOfNoteToDelete)
+      }
+      return null
     },
     // The method takes care of creating new users
     addUser: async (root, args) => {
@@ -141,14 +166,14 @@ const resolvers = {
       console.log('user', user)
       if (!user) {
         console.log('invalid username or password')
-        return null
+        throw new UserInputError('wrong credentials')
       }
 
       const passwordOk = await bcrypt.compare(typedPwd, user.passwordHash)
       console.log('passwordOk', passwordOk)
       if (!passwordOk) {
         console.log('Invalid username or password')
-        return null
+        throw new UserInputError('wrong credentials')
       }
       const userForToken = {
         email: user.email,
@@ -163,17 +188,40 @@ const resolvers = {
   }
 }
 
-/*
-const context = async ({req}) => {
+const context = async ({ req }) => {
+  let currentUser = null
   // Get the token from the request
-  const token = req.headers.authorization || ''
+  const token = getTokenFromReq(req)
+  if (!token) {
+    console.log('missing or invalid token')
+  } else {
+    try {
+      const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
+      if (!token || !decodedToken.id) {
+        console.log('missing or invalid token')
+      } else {
+        currentUser = await User.findById(decodedToken.id)
+        console.log('user', currentUser, ' set as currentUser')
+      }
+    } catch (e) {
+      console.log('Error with token handling', e)
+    }
+  }
 
-  const user = await User.findOne({ email: })
+  return { currentUser }
 }
-*/
+
+const getTokenFromReq = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    return authorization.substring(7)
+  }
+  return null
+}
 
 const server = new ApolloServer({
   typeDefs,
+  context,
   resolvers
 })
 
