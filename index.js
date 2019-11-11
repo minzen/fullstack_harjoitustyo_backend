@@ -63,6 +63,12 @@ const typeDefs = gql`
   type Mutation {
     addNote(title: String!, content: String!, keywords: [String]): Note
     deleteNote(id: ID!): String
+    editNote(
+      id: ID!
+      title: String!
+      content: String!
+      keywords: [String]
+    ): Note
     addUser(
       email: String!
       password: String!
@@ -90,7 +96,9 @@ const resolvers = {
       if (!currentUser) {
         throw new AuthenticationError(NOT_AUTHENTICATED)
       }
-      return await Note.findById({ _id: args.id, user: currentUser })
+      return await Note.findById({ _id: args.id, user: currentUser }).populate(
+        'user'
+      )
     }
 
     // TODO: Add queries for: getNotesByUserAndKeyword etc.
@@ -121,6 +129,7 @@ const resolvers = {
       return note
     },
     deleteNote: async (root, args, context) => {
+      console.log('deleteNote', args)
       const currentUser = context.currentUser
       if (!currentUser) {
         throw new AuthenticationError(NOT_AUTHENTICATED)
@@ -130,7 +139,9 @@ const resolvers = {
       const note = await Note.findById(idOfNoteToDelete)
       if (note) {
         if (note.user !== currentUser) {
-          console.log('cannot delete the note, as it is not owned by the user')
+          console.log(
+            `cannot delete the note ${idOfNoteToDelete} as it is not owned by the user`
+          )
           return null
         }
       }
@@ -148,6 +159,19 @@ const resolvers = {
         console.log('error when deleting an item', idOfNoteToDelete)
       }
       return null
+    },
+    editNote: async (root, args, context) => {
+      console.log('editNote', args)
+      const currentUser = context.currentUser
+      if (!currentUser) {
+        throw new AuthenticationError(NOT_AUTHENTICATED)
+      }
+
+      const idOfNoteToBeEdited = args.id
+      return Note.findOneAndUpdate(
+        { _id: idOfNoteToBeEdited, user: currentUser },
+        { title: args.title, content: args.content, keywords: args.keywords }
+      ).populate('user')
     },
     // The method takes care of creating new users
     addUser: async (root, args) => {
