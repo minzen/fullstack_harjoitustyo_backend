@@ -36,13 +36,20 @@ let notes = []
 let users = []
 
 const typeDefs = gql`
+  "A User entity with the possibility to create, edit and delete own notes."
   type User {
+    "id: an identifier of the User"
     id: ID!
+    "email: each User has an email address that is unique and can be used to identify the user"
     email: String!
+    "passwordHash: a computed hash value of the password provided by a User is stored to the document database."
     passwordHash: String!
+    "givenname: the first name of a User"
     givenname: String
+    "surname: the family name of a User"
     surname: String
   }
+  "A Note entity containing a title, content and possibly a set of keywords that are used to search for and categorize the notes."
   type Note {
     id: ID!
     title: String
@@ -50,10 +57,12 @@ const typeDefs = gql`
     keywords: [String]
     user: User
   }
+  "A Token entity bearing a JSON Web Token computed by the user data and a secret"
   type Token {
     value: String!
   }
   type Query {
+    # Returns the currently logged in user
     me: User
     notesCount: Int!
     usersCount: Int!
@@ -81,6 +90,7 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
+    // Returns the current user or if not available, null
     me: (root, args, context) => context.currentUser,
     notesCount: () => Note.collection.countDocuments(),
     usersCount: () => User.collection.countDocuments(),
