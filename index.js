@@ -57,7 +57,7 @@ const typeDefs = gql`
     me: User
     notesCount: Int!
     usersCount: Int!
-    allNotes: [Note!]!
+    allNotes: [Note!]
     findNoteById(id: String!): Note
     allUsers: [User!]!
   }
@@ -79,8 +79,12 @@ const resolvers = {
     me: (root, args, context) => context.currentUser,
     notesCount: () => Note.collection.countDocuments(),
     usersCount: () => User.collection.countDocuments(),
-    allNotes: () => {
-      return Note.find({}).populate('user')
+    allNotes: async (root, args, context) => {
+      const currentUser = context.currentUser
+      if (!currentUser) {
+        return null
+      }
+      return await Note.find({ user: currentUser }).populate('user')
     },
     findNoteById: (root, args) => Note.findById({ _id: args.id }),
     allUsers: () => {
@@ -119,8 +123,16 @@ const resolvers = {
       if (!currentUser) {
         throw new AuthenticationError(NOT_AUTHENTICATED)
       }
-
       const idOfNoteToDelete = args.id
+
+      const note = await Note.findById(idOfNoteToDelete)
+      if (note) {
+        if (note.user !== currentUser) {
+          console.log('cannot delete the note, as it is not owned by the user')
+          return null
+        }
+      }
+
       try {
         const deleted = await Note.findByIdAndDelete(idOfNoteToDelete)
         console.log('deleted', deleted)
@@ -141,7 +153,6 @@ const resolvers = {
       const saltRounds = 10
       const passwordHash = await bcrypt.hash(args.password, saltRounds)
       const user = new User({
-        id: uuid(),
         email: args.email,
         passwordHash: passwordHash,
         givenname: args.givenname,
@@ -150,12 +161,12 @@ const resolvers = {
 
       try {
         await user.save()
+        return user
       } catch (e) {
         console.log('Error when saving the user', e)
       }
       console.log(`User ${user} created and saved.`)
-
-      return user
+      return null
     },
     login: async (root, args) => {
       console.log('login', args)
