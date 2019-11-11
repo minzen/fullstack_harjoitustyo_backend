@@ -9,12 +9,13 @@ require('dotenv').config()
 const uuid = require('uuid/v1')
 const User = require('./models/user')
 const Note = require('./models/note')
+const Token = require('./models/token')
 const mongoose = require('mongoose')
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
 const bcrypt = require('bcrypt')
-// const jwt = require('jsonwebtoken')
-// const JWT_SECRET = process.env.JWT_SECRET
+const jwt = require('jsonwebtoken')
+const JWT_SECRET = process.env.JWT_SECRET
 // const pubsub = new PubSub()
 
 const MONGODB_URI = process.env.MONGODB_URI
@@ -52,6 +53,7 @@ const typeDefs = gql`
     value: String!
   }
   type Query {
+    me: User
     notesCount: Int!
     usersCount: Int!
     allNotes: [Note!]!
@@ -71,7 +73,7 @@ const typeDefs = gql`
       givenname: String
       surname: String
     ): User
-    login(email: String!, passwordHash: String!): Token
+    login(email: String!, password: String!): Token
   }
 `
 
@@ -129,9 +131,46 @@ const resolvers = {
       console.log(`User ${user} created and saved.`)
 
       return user
+    },
+    login: async (root, args) => {
+      console.log('login', args)
+      const typedEmail = args.email
+      const typedPwd = args.password
+
+      const user = await User.findOne({ email: typedEmail })
+      console.log('user', user)
+      if (!user) {
+        console.log('invalid username or password')
+        return null
+      }
+
+      const passwordOk = await bcrypt.compare(typedPwd, user.passwordHash)
+      console.log('passwordOk', passwordOk)
+      if (!passwordOk) {
+        console.log('Invalid username or password')
+        return null
+      }
+      const userForToken = {
+        email: user.email,
+        id: user._id
+      }
+      console.log('userForToken', userForToken)
+      const token = await jwt.sign(userForToken, process.env.JWT_SECRET)
+
+      console.log('token', token)
+      return new Token({ value: token })
     }
   }
 }
+
+/*
+const context = async ({req}) => {
+  // Get the token from the request
+  const token = req.headers.authorization || ''
+
+  const user = await User.findOne({ email: })
+}
+*/
 
 const server = new ApolloServer({
   typeDefs,
