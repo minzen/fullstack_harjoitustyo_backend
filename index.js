@@ -95,7 +95,8 @@ const typeDefs = gql`
   }
   type Mutation {
     """
-    Adds a Note for the logged in User (requires authentication). Parameters: title (String, mandatory), content (String, mandatory), keywords (array of Strings).
+    Adds a Note for the logged in User (requires authentication).
+    Parameters: title (String, mandatory), content (String, mandatory), keywords (array of Strings).
     Return value: Note
     """
     addNote(title: String!, content: String!, keywords: [String]): Note
@@ -105,7 +106,8 @@ const typeDefs = gql`
     """
     deleteNote(id: ID!): String
     """
-    Enables editing a Note of a User(requires authentication). Parameters: ID (String, mandatory), title (String, mandatory), content (String, mandatory), keywords (array of Strings).
+    Enables editing a Note of a User(requires authentication).
+    Parameters: ID (String, mandatory), title (String, mandatory), content (String, mandatory), keywords (array of Strings).
     Return value: Note with the applied changes or null
     """
     editNote(
@@ -115,12 +117,25 @@ const typeDefs = gql`
       keywords: [String]
     ): Note
     """
-    Enables adding a User to the database. Parameters: email (String, mandatory), password (String, mandatory), givenname (String), surname (String).
+    Enables adding a User to the database.
+    Parameters: email (String, mandatory), password (String, mandatory), givenname (String), surname (String).
     Return value: Created user or null
     """
     addUser(
       email: String!
       password: String!
+      givenname: String
+      surname: String
+    ): User
+    """
+    Enables editing an existing User (e.g. change email, password or name).
+    Parameters: ID (String, mandatory), email (String), password (String), givenname (String), surname (String).
+    Return value: Changed user or null
+    """
+    editUser(
+      id: ID!
+      email: String
+      password: String
       givenname: String
       surname: String
     ): User
@@ -157,9 +172,7 @@ const resolvers = {
     // TODO: Add queries for: getNotesByUserAndKeyword etc.
   },
   Mutation: {
-    // TODO: change user operation
     // TODO: tests
-    // TODO: Add operations for changing existing notes
     addNote: async (root, args, context) => {
       const currentUser = context.currentUser
       if (!currentUser) {
@@ -213,7 +226,7 @@ const resolvers = {
       }
       return null
     },
-    // The method enables editin the notes of an authenticated user
+    // The method enables editing the notes of an authenticated user
     editNote: async (root, args, context) => {
       console.log('editNote', args)
       const currentUser = context.currentUser
@@ -222,7 +235,7 @@ const resolvers = {
       }
 
       const idOfNoteToBeEdited = args.id
-      return Note.findOneAndUpdate(
+      return await Note.findOneAndUpdate(
         { _id: idOfNoteToBeEdited, user: currentUser },
         { title: args.title, content: args.content, keywords: args.keywords }
       ).populate('user')
@@ -230,8 +243,7 @@ const resolvers = {
     // The method takes care of creating new users
     addUser: async (root, args) => {
       console.log('addUser', args)
-      const saltRounds = 10
-      const passwordHash = await bcrypt.hash(args.password, saltRounds)
+      const passwordHash = await createPwdHash(args.password)
       const user = new User({
         email: args.email,
         passwordHash: passwordHash,
@@ -242,11 +254,34 @@ const resolvers = {
       try {
         await user.save()
         return user
+        console.log(`User ${user} created and saved.`)
       } catch (e) {
         console.log('Error when saving the user', e)
       }
-      console.log(`User ${user} created and saved.`)
+      console.log('no user added, returning null')
       return null
+    },
+    // The method enables changing the attributes of existing users
+    editUser: async (root, args, context) => {
+      console.log('editUser', args)
+      const currentUser = context.currentUser
+      if (!currentUser) {
+        throw new AuthenticationError(NOT_AUTHENTICATED)
+      }
+      const idOfUserToBeEdited = args.id
+      const passwordHash = await createPwdHash(args.password)
+      try {
+        return await User.findByIdAndUpdate({
+          _id: idOfUserToBeEdited,
+          email: args.email,
+          passwordHash: passwordHash,
+          givenname: args.givenname,
+          surname: args.surname
+        })
+      } catch (e) {
+        console.log('error when updating the user', e)
+        return null
+      }
     },
     // The method enables the login for a user and takes the email address and the password as parameters
     login: async (root, args) => {
@@ -298,6 +333,11 @@ const context = async ({ req }) => {
   }
 
   return { currentUser }
+}
+
+const createPwdHash = async password => {
+  const saltRounds = 10
+  return await bcrypt.hash(args.password, saltRounds)
 }
 
 const getTokenFromReq = request => {

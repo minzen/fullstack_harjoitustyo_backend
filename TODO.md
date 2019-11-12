@@ -20,7 +20,11 @@
 - Token-perustainen autentikointi
 - Joku UI-framework käyttöön
 
-## Frontend/React Native
+## Frontend
+
+- Toteutus :)
+
+## React Native
 
 - Internationalization, esim. https://github.com/react-native-community/react-native-localize
 - Datan haku ApolloClientilla API:n kautta
@@ -41,3 +45,6 @@
 - toteuta unit- ja e2e-testit
 - Kuvien ja videoiden lisääminen dokumenttitietokantaan? Mieluummin ei, vaan tallennetaan ainoastaan linkkejä resursseihin ja kuvat esim. S3-bucketiin
 - Logout / tiedot käyttäjästä
+
+* Tarkista turvallisuus-asiat: XSS-vaarat etc.
+*
