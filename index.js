@@ -38,15 +38,25 @@ let users = []
 const typeDefs = gql`
   "A User entity with the possibility to create, edit and delete own notes."
   type User {
-    "id: an identifier of the User"
+    """
+    id: an identifier of the User
+    """
     id: ID!
-    "email: each User has an email address that is unique and can be used to identify the user"
+    """
+    email: each User has an email address that is unique and can be used to identify the user
+    """
     email: String!
-    "passwordHash: a computed hash value of the password provided by a User is stored to the document database."
+    """
+    passwordHash: a computed hash value of the password provided by a User is stored to the document database.
+    """
     passwordHash: String!
-    "givenname: the first name of a User"
+    """
+    givenname: the first name of a User
+    """
     givenname: String
-    "surname: the family name of a User"
+    """
+    surname: the family name of a User
+    """
     surname: String
   }
   "A Note entity containing a title, content and possibly a set of keywords that are used to search for and categorize the notes."
@@ -62,35 +72,68 @@ const typeDefs = gql`
     value: String!
   }
   type Query {
-    # Returns the currently logged in user
+    """
+    Returns the user currently logged in or null, if there is no logged in user
+    """
     me: User
+    """
+    Returns the number of all notes in the database
+    """
     notesCount: Int!
+    """
+    Returns the number of all users in the database
+    """
     usersCount: Int!
+    """
+    Returns all the notes of a user
+    """
     allNotes: [Note!]
+    """
+    Returns a Note by its id (if belonging to the user) or null, if not available
+    """
     findNoteById(id: String!): Note
   }
   type Mutation {
+    """
+    Adds a Note for the logged in User (requires authentication). Parameters: title (String, mandatory), content (String, mandatory), keywords (array of Strings).
+    Return value: Note
+    """
     addNote(title: String!, content: String!, keywords: [String]): Note
+    """
+    Deletes a Note of a User by its ID (requires authentication). Parameters: ID (String, mandatory).
+    Return value: ID of the deleted Note as String or null
+    """
     deleteNote(id: ID!): String
+    """
+    Enables editing a Note of a User(requires authentication). Parameters: ID (String, mandatory), title (String, mandatory), content (String, mandatory), keywords (array of Strings).
+    Return value: Note with the applied changes or null
+    """
     editNote(
       id: ID!
       title: String!
       content: String!
       keywords: [String]
     ): Note
+    """
+    Enables adding a User to the database. Parameters: email (String, mandatory), password (String, mandatory), givenname (String), surname (String).
+    Return value: Created user or null
+    """
     addUser(
       email: String!
       password: String!
       givenname: String
       surname: String
     ): User
+    """
+    Enables the login of a User. Parameters: email (String, mandatory), password (String, mandatory).
+    Return value: Token entity containing the access token value or null
+    """
     login(email: String!, password: String!): Token
   }
 `
 
 const resolvers = {
   Query: {
-    // Returns the current user or if not available, null
     me: (root, args, context) => context.currentUser,
     notesCount: () => Note.collection.countDocuments(),
     usersCount: () => User.collection.countDocuments(),
@@ -170,6 +213,7 @@ const resolvers = {
       }
       return null
     },
+    // The method enables editin the notes of an authenticated user
     editNote: async (root, args, context) => {
       console.log('editNote', args)
       const currentUser = context.currentUser
@@ -204,6 +248,7 @@ const resolvers = {
       console.log(`User ${user} created and saved.`)
       return null
     },
+    // The method enables the login for a user and takes the email address and the password as parameters
     login: async (root, args) => {
       console.log('login', args)
       const typedEmail = args.email
