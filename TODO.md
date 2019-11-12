@@ -19,9 +19,6 @@
 - Datan haku ApolloClientilla
 - Token-perustainen autentikointi
 - Joku UI-framework käyttöön
-
-## Frontend
-
 - Toteutus :)
 
 ## React Native
@@ -36,10 +33,8 @@
   - Käyttäjäprofiili
   - Käyttäjätilin rekisteröinti-näkymä
 - Header ja menu
-- Token-perustainen autentikointi: Login/logout
 - Tyylien käyttö
 - React Navigation käyttöön (https://facebook.github.io/react-native/docs/navigation)
-- Näytä vain kirjautuneen käyttäjän muistiinpanot
 - muistiinpanojen editointi ja poistaminen
 - suosikkien asettaminen
 - toteuta unit- ja e2e-testit
@@ -47,4 +42,4 @@
 - Logout / tiedot käyttäjästä
 
 * Tarkista turvallisuus-asiat: XSS-vaarat etc.
-*
+* Validointi
