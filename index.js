@@ -174,22 +174,23 @@ const resolvers = {
   Mutation: {
     // TODO: tests
     addNote: async (root, args, context) => {
+      console.log('addNote', args)
       const currentUser = context.currentUser
       if (!currentUser) {
         throw new AuthenticationError(NOT_AUTHENTICATED)
       }
       const note = new Note({
-        id: uuid(),
         title: args.title,
         content: args.content,
         keywords: args.keywords,
         user: currentUser
-      }).populate('user')
+      })
 
       try {
         await note.save()
       } catch (e) {
         console.log('Error when saving the note', e)
+        return null
       }
       console.log(`Note ${note} saved.`)
       return note
