@@ -40,3 +40,4 @@
 - suosikkien asettaminen
 - toteuta unit- ja e2e-testit
 - Kuvien ja videoiden lisääminen dokumenttitietokantaan? Mieluummin ei, vaan tallennetaan ainoastaan linkkejä resursseihin ja kuvat esim. S3-bucketiin
+- Logout / tiedot käyttäjästä

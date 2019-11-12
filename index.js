@@ -250,7 +250,6 @@ const resolvers = {
     },
     // The method enables the login for a user and takes the email address and the password as parameters
     login: async (root, args) => {
-      console.log('login', args)
       const typedEmail = args.email
       const typedPwd = args.password
 
@@ -284,9 +283,7 @@ const context = async ({ req }) => {
   let currentUser = null
   // Get the token from the request
   const token = getTokenFromReq(req)
-  if (!token) {
-    console.log('missing or invalid token')
-  } else {
+  if (token) {
     try {
       const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
       if (!token || !decodedToken.id) {
