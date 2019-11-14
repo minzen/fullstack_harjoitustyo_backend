@@ -1,3 +1,5 @@
+// import GraphQLScalarType from 'graphql'
+// import Kind from 'graphql/language'
 const {
   ApolloServer,
   gql,
@@ -36,6 +38,8 @@ let notes = []
 let users = []
 
 const typeDefs = gql`
+  scalar Date
+
   "A User entity with the possibility to create, edit and delete own notes."
   type User {
     """
@@ -61,10 +65,29 @@ const typeDefs = gql`
   }
   "A Note entity containing a title, content and possibly a set of keywords that are used to search for and categorize the notes."
   type Note {
+    """
+    id: an Identifier of a Note
+    """
     id: ID!
+    """
+    title: the title of a Note
+    """
     title: String
+    """
+    content: the content of a Note as String
+    """
     content: String!
+    """
+    keywords: an array of Strings containing the relevant keywords used for categorising Notes
+    """
     keywords: [String]
+    # """
+    # modified: timestamp of the latest modification of a Note (using the custom scalar type Date)
+    # """
+    # modified: Date
+    """
+    user: Reference to the User that has created the Note
+    """
     user: User
   }
   "A Token entity bearing a JSON Web Token computed by the user data and a secret"
@@ -148,6 +171,26 @@ const typeDefs = gql`
 `
 
 const resolvers = {
+  // // The scalar type Date as presented in the Apollo Documentation
+  // // https://www.apollographql.com/docs/graphql-tools/scalars/
+  // Date: new GraphQLScalarType({
+  //   name: 'Date',
+  //   description: 'Date',
+  //   parseValue(value) {
+  //     // value from the client
+  //     return new Date(value)
+  //   },
+  //   serialize(value) {
+  //     // value sent to the client
+  //     return value.getTime()
+  //   },
+  //   parseLiteral(ast) {
+  //     if (ast.kind === Kind.INT) {
+  //       return new Date(ast.value)
+  //     }
+  //     return null
+  //   }
+  // }),
   Query: {
     me: (root, args, context) => context.currentUser,
     notesCount: () => Note.collection.countDocuments(),
@@ -184,6 +227,7 @@ const resolvers = {
         content: args.content,
         keywords: args.keywords,
         user: currentUser
+        // modified: new Date()
       })
 
       try {
@@ -238,7 +282,12 @@ const resolvers = {
       const idOfNoteToBeEdited = args.id
       return await Note.findOneAndUpdate(
         { _id: idOfNoteToBeEdited, user: currentUser },
-        { title: args.title, content: args.content, keywords: args.keywords }
+        {
+          title: args.title,
+          content: args.content,
+          keywords: args.keywords
+          // modified: new Date()
+        }
       ).populate('user')
     },
     // The method takes care of creating new users
