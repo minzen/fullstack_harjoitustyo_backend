@@ -8,6 +8,7 @@ const {
   PubSub
 } = require('apollo-server')
 require('dotenv').config()
+const { typeDefs } = require('./typeDefs')
 const uuid = require('uuid/v1')
 const User = require('./models/user')
 const Note = require('./models/note')
@@ -37,138 +38,7 @@ mongoose
 let notes = []
 let users = []
 
-const typeDefs = gql`
-  scalar Date
-
-  "A User entity with the possibility to create, edit and delete own notes."
-  type User {
-    """
-    id: an identifier of the User
-    """
-    id: ID!
-    """
-    email: each User has an email address that is unique and can be used to identify the user
-    """
-    email: String!
-    """
-    passwordHash: a computed hash value of the password provided by a User is stored to the document database.
-    """
-    passwordHash: String!
-    """
-    givenname: the first name of a User
-    """
-    givenname: String
-    """
-    surname: the family name of a User
-    """
-    surname: String
-  }
-  "A Note entity containing a title, content and possibly a set of keywords that are used to search for and categorize the notes."
-  type Note {
-    """
-    id: an Identifier of a Note
-    """
-    id: ID!
-    """
-    title: the title of a Note
-    """
-    title: String
-    """
-    content: the content of a Note as String
-    """
-    content: String!
-    """
-    keywords: an array of Strings containing the relevant keywords used for categorising Notes
-    """
-    keywords: [String]
-    # """
-    # modified: timestamp of the latest modification of a Note (using the custom scalar type Date)
-    # """
-    # modified: Date
-    """
-    user: Reference to the User that has created the Note
-    """
-    user: User
-  }
-  "A Token entity bearing a JSON Web Token computed by the user data and a secret"
-  type Token {
-    value: String!
-  }
-  type Query {
-    """
-    Returns the user currently logged in or null, if there is no logged in user
-    """
-    me: User
-    """
-    Returns the number of all notes in the database
-    """
-    notesCount: Int!
-    """
-    Returns the number of all users in the database
-    """
-    usersCount: Int!
-    """
-    Returns all the notes of a user
-    """
-    allNotes: [Note!]
-    """
-    Returns a Note by its id (if belonging to the user) or null, if not available
-    """
-    findNoteById(id: String!): Note
-  }
-  type Mutation {
-    """
-    Adds a Note for the logged in User (requires authentication).
-    Parameters: title (String, mandatory), content (String, mandatory), keywords (array of Strings).
-    Return value: Note
-    """
-    addNote(title: String!, content: String!, keywords: [String]): Note
-    """
-    Deletes a Note of a User by its ID (requires authentication). Parameters: ID (String, mandatory).
-    Return value: ID of the deleted Note as String or null
-    """
-    deleteNote(id: ID!): String
-    """
-    Enables editing a Note of a User(requires authentication).
-    Parameters: ID (String, mandatory), title (String, mandatory), content (String, mandatory), keywords (array of Strings).
-    Return value: Note with the applied changes or null
-    """
-    editNote(
-      id: ID!
-      title: String!
-      content: String!
-      keywords: [String]
-    ): Note
-    """
-    Enables adding a User to the database.
-    Parameters: email (String, mandatory), password (String, mandatory), givenname (String), surname (String).
-    Return value: Created user or null
-    """
-    addUser(
-      email: String!
-      password: String!
-      givenname: String
-      surname: String
-    ): User
-    """
-    Enables editing an existing User (e.g. change email, password or name).
-    Parameters: ID (String, mandatory), email (String), password (String), givenname (String), surname (String).
-    Return value: Changed user or null
-    """
-    editUser(
-      id: ID!
-      email: String
-      password: String
-      givenname: String
-      surname: String
-    ): User
-    """
-    Enables the login of a User. Parameters: email (String, mandatory), password (String, mandatory).
-    Return value: Token entity containing the access token value or null
-    """
-    login(email: String!, password: String!): Token
-  }
-`
+console.log('typeDefs', typeDefs)
 
 const resolvers = {
   // // The scalar type Date as presented in the Apollo Documentation
