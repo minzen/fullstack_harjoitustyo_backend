@@ -33,7 +33,8 @@ const startInMemoryDb = async () => {
     useNewUrlParser: true,
     autoReconnect: true,
     reconnectTries: Number.MAX_VALUE,
-    reconnectInterval: 1000
+    reconnectInterval: 1000,
+    useUnifiedTopology: true
   }
 
   let uri
@@ -62,7 +63,17 @@ const initE2eDb = async () => {
   })
 
   try {
-    await user.save()
+    const testUser = await user.save()
+    console.log('Created user', testUser)
+    const note = new Note({
+      title: 'An interesting story about the Finnish football',
+      content:
+        'https://dynamic.hs.fi/2019/karsintakuvat/?_ga=2.73417106.1043337552.1573848580-425762508.1569652028',
+      keywords: 'football',
+      user: testUser
+    })
+    const testNote = await note.save()
+    console.log('Created test note', testNote)
   } catch (e) {
     console.log(e)
   }
