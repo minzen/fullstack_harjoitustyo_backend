@@ -22,23 +22,76 @@ const JWT_SECRET = process.env.JWT_SECRET
 // const pubsub = new PubSub()
 const NOT_AUTHENTICATED = 'not authenticated'
 
-const MONGODB_URI = process.env.MONGODB_URI
-console.log('connecting to ', MONGODB_URI)
-// Create a DB connection
-mongoose
-  .connect(MONGODB_URI, {
+const createPwdHash = async password => {
+  const saltRounds = 10
+  return await bcrypt.hash(password, saltRounds)
+}
+
+const startInMemoryDb = async () => {
+  const { MongoMemoryServer } = require('mongodb-memory-server')
+  const mongooseOpts = {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    autoReconnect: true,
+    reconnectTries: Number.MAX_VALUE,
+    reconnectInterval: 1000
+  }
+
+  let uri
+  try {
+    const mongod = await new MongoMemoryServer()
+    uri = await mongod.getConnectionString()
+    console.log('uri', uri)
+    await mongoose.connect(uri, mongooseOpts)
+    console.log('connected to the in-memory MongoDB')
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+const initE2eDb = async () => {
+  const email = 'teemu.testaaja@test.net'
+  const password = 'ThisIsMyPwd_2019'
+  const passwordHash = await createPwdHash(password)
+  const givenname = 'Teemu'
+  const surname = 'Testaaja'
+  const user = new User({
+    email: email,
+    passwordHash: passwordHash,
+    givenname: givenname,
+    surname: surname
   })
-  .then(console.log('connected to MongoDB'))
-  .catch(e => {
-    console.log('error when connecting to MongoDB', e.message)
-  })
+
+  try {
+    await user.save()
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+console.log('NODE_ENV', process.env.NODE_ENV)
+// If the environment is "e2e" we want to use the in-memory mongoDB for testing
+// start and initialize a database
+if (process.env.NODE_ENV === 'e2e') {
+  console.log('Setting up everything for the e2e tests on the backend')
+  startInMemoryDb()
+  initE2eDb()
+} else {
+  const MONGODB_URI = process.env.MONGODB_URI
+  console.log('connecting to ', MONGODB_URI)
+  // Create a DB connection
+  mongoose
+    .connect(MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    })
+    .then(console.log('connected to MongoDB'))
+    .catch(e => {
+      console.log('error when connecting to MongoDB', e.message)
+    })
+}
 
 let notes = []
 let users = []
-
-console.log('typeDefs', typeDefs)
 
 const resolvers = {
   // // The scalar type Date as presented in the Apollo Documentation
@@ -62,7 +115,10 @@ const resolvers = {
   //   }
   // }),
   Query: {
-    me: (root, args, context) => context.currentUser,
+    me: (root, args, context) => {
+      console.log('me()', args, context)
+      return context.currentUser
+    },
     notesCount: () => Note.collection.countDocuments(),
     usersCount: () => User.collection.countDocuments(),
     allNotes: async (root, args, context) => {
@@ -253,11 +309,6 @@ const context = async ({ req }) => {
   }
 
   return { currentUser }
-}
-
-const createPwdHash = async password => {
-  const saltRounds = 10
-  return await bcrypt.hash(args.password, saltRounds)
 }
 
 const getTokenFromReq = request => {

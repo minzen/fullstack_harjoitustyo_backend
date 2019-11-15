@@ -4,18 +4,22 @@
   "description": "Fullstack-kurssin harjoitustyö",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "NODE_ENV=production node index.js",
+    "watch": "NODE_ENV=development nodemon index.js",
+    "test": "NODE_ENV=test jest --runInBand ./test",
+    "e2e": "NODE_ENV=e2e node index.js"
   },
   "author": "Feetu Nyrhinen <feetu.nyrhinen@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "apollo-server": "^2.9.7",
     "bcrypt": "^3.0.6",
+    "crossenv": "^0.0.2-security",
     "dotenv": "^8.2.0",
     "graphql": "^14.5.8",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
+    "mongodb-memory-server": "^6.0.1",
     "mongoose": "^5.7.8",
     "mongoose-unique-validator": "^2.0.3"
   },
