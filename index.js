@@ -79,6 +79,19 @@ const initE2eDb = async () => {
   }
 }
 
+const startDb = async () => {
+  const MONGODB_URI = process.env.MONGODB_URI
+  try {
+    await mongoose.connect(MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    })
+    console.log('connected to MongoDB')
+  } catch (e) {
+    console.log('error when connecting to MongoDB', e.message)
+  }
+}
+
 console.log('NODE_ENV', process.env.NODE_ENV)
 // If the environment is "e2e" we want to use the in-memory mongoDB for testing
 // start and initialize a database
@@ -87,18 +100,7 @@ if (process.env.NODE_ENV === 'e2e') {
   startInMemoryDb()
   initE2eDb()
 } else {
-  const MONGODB_URI = process.env.MONGODB_URI
-  console.log('connecting to ', MONGODB_URI)
-  // Create a DB connection
-  mongoose
-    .connect(MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    })
-    .then(console.log('connected to MongoDB'))
-    .catch(e => {
-      console.log('error when connecting to MongoDB', e.message)
-    })
+  startDb()
 }
 
 let notes = []
@@ -127,7 +129,7 @@ const resolvers = {
   // }),
   Query: {
     me: (root, args, context) => {
-      console.log('me()', args, context)
+      console.log('me()', args, 'currentUser: ', context.currentUser)
       return context.currentUser
     },
     notesCount: () => Note.collection.countDocuments(),
@@ -231,6 +233,7 @@ const resolvers = {
     addUser: async (root, args) => {
       console.log('addUser', args)
       const passwordHash = await createPwdHash(args.password)
+      console.log('passwordHash', passwordHash)
       const user = new User({
         email: args.email,
         passwordHash: passwordHash,

@@ -20,6 +20,9 @@
 - Token-perustainen autentikointi
 - Joku UI-framework käyttöön
 - Toteutus :)
+- Validointi:
+  - regexit
+  - email eihän ole duplikaatteja
 
 ## React Native
 
