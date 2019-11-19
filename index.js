@@ -273,6 +273,45 @@ const resolvers = {
         return null
       }
     },
+    changePassword: async (root, args, context) => {
+      console.log('changePassword', args)
+      const currentUser = context.currentUser
+      if (!currentUser) {
+        throw new AuthenticationError(NOT_AUTHENTICATED)
+      }
+
+      const currentPassword = args.currentPassword
+      const newPassword = args.newPassword
+      const newPassword2 = args.newPassword2
+
+      // In case the provided passwords do not match, return null
+      if (newPassword !== newPassword2) {
+        console.log(
+          'The provided new passwords differ from each other, returning null'
+        )
+        return null
+      }
+
+      const passwordOk = await bcrypt.compare(
+        currentPassword,
+        currentUser.passwordHash
+      )
+      if (!passwordOk) {
+        console.log(
+          'The given current password differs from the one of the current user, cannot proceed.'
+        )
+        throw new AuthenticationError(NOT_AUTHENTICATED)
+      }
+
+      const newPasswordHash = await createPwdHash(newPassword)
+      try {
+        currentUser.passwordHash = newPasswordHash
+        return await currentUser.save()
+      } catch (e) {
+        console.log('Error when saving the user', currentUser)
+        return null
+      }
+    },
     // The method enables the login for a user and takes the email address and the password as parameters
     login: async (root, args) => {
       const typedEmail = args.email

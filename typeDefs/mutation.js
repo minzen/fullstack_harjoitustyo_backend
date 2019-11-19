@@ -50,6 +50,16 @@ const mutation = gql`
       surname: String
     ): User
     """
+    Enables switching the password of the logged in user.
+    Parameters: currentPassword (String, mandatory), newPassword (String, mandatory), newPassword2 (String, mandatory).
+    Return value: Changed user or null
+    """
+    changePassword(
+      currentPassword: String!
+      newPassword: String!
+      newPassword2: String!
+    ): User
+    """
     Enables the login of a User. Parameters: email (String, mandatory), password (String, mandatory).
     Return value: Token entity containing the access token value or null
     """
