@@ -188,7 +188,7 @@ const resolvers = {
 
       const note = await Note.findById(idOfNoteToDelete)
       if (note) {
-        if (note.user !== currentUser) {
+        if (!note.user.equals(currentUser._id)) {
           console.log(
             `cannot delete the note ${idOfNoteToDelete} as it is not owned by the user`
           )
