@@ -38,12 +38,11 @@ const mutation = gql`
       surname: String
     ): User
     """
-    Enables editing an existing User (e.g. change email, password or name).
-    Parameters: ID (String, mandatory), email (String), password (String), givenname (String), surname (String).
+    Enables editing the current User (e.g. change email, password or name).
+    Parameters: email (String), password (String), givenname (String), surname (String).
     Return value: Changed user or null
     """
     editUser(
-      id: ID!
       email: String
       password: String
       givenname: String

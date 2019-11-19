@@ -258,18 +258,13 @@ const resolvers = {
       if (!currentUser) {
         throw new AuthenticationError(NOT_AUTHENTICATED)
       }
-      const idOfUserToBeEdited = args.id
-      const passwordHash = await createPwdHash(args.password)
       try {
-        return await User.findByIdAndUpdate({
-          _id: idOfUserToBeEdited,
-          email: args.email,
-          passwordHash: passwordHash,
-          givenname: args.givenname,
-          surname: args.surname
-        })
+        currentUser.givenname = args.givenname
+        currentUser.surname = args.surname
+        currentUser.email = args.email
+        return await currentUser.save()
       } catch (e) {
-        console.log('error when updating the user', e)
+        console.log('error when updateing the user data', e)
         return null
       }
     },
