@@ -5,13 +5,13 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
     unique: false,
-    minlength: 4
+    minlength: 1
   },
   content: {
     type: String,
     required: true,
     unique: false,
-    minlength: 5
+    minlength: 1
   },
   keywords: {
     type: [{ type: String }]
