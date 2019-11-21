@@ -2,13 +2,6 @@
 
 ## Backend
 
-- Datan haku GraphQL-API:sta
-- MongoDB:n alustaminen ja konfigurointi
-- Skeeman viimeistely: User, Note - mitä muuta?
-- API-design
-- API:n kytkeminen MongoDB-tietokantaan
-- Token perustainen autentikointi
-- Käyttäjien rekisteröinti ja salasanojen hallinta
 - Testit
 - Subscriptionit
 - Tsekkaa, kuinka Apollo Server saadaan käyttämään https:ää
@@ -18,7 +11,6 @@
 - Design ja toteutus: komponentit ja näkymät
 - Datan haku ApolloClientilla
 - Token-perustainen autentikointi
-- Joku UI-framework käyttöön
 - Toteutus :)
 - Validointi:
   - regexit
@@ -44,5 +36,8 @@
 - Kuvien ja videoiden lisääminen dokumenttitietokantaan? Mieluummin ei, vaan tallennetaan ainoastaan linkkejä resursseihin ja kuvat esim. S3-bucketiin
 - Logout / tiedot käyttäjästä
 
-* Tarkista turvallisuus-asiat: XSS-vaarat etc.
-* Validointi
+- Tarkista turvallisuus-asiat: XSS-vaarat etc.
+- Validointi
+- Graafiset viilaukset (himmennetyt näkymät, popup-efektit)
+- Muistiinpanojen jakaminen ja kommentointi
+-

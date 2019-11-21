@@ -173,7 +173,7 @@ const resolvers = {
         await note.save()
       } catch (e) {
         console.log('Error when saving the note', e)
-        return null
+        throw new UserInputError(e.message, { invalidArgs: args })
       }
       console.log(`Note ${note} saved.`)
       return note
@@ -232,6 +232,14 @@ const resolvers = {
     // The method takes care of creating new users
     addUser: async (root, args) => {
       console.log('addUser', args)
+
+      if (!args.password || args.password.length < 6) {
+        throw new UserInputError(
+          'Invalid password (minimum length 6 characters)',
+          { invalidArgs: args.password }
+        )
+      }
+
       const passwordHash = await createPwdHash(args.password)
       console.log('passwordHash', passwordHash)
       const user = new User({
@@ -243,13 +251,12 @@ const resolvers = {
 
       try {
         await user.save()
-        return user
-        console.log(`User ${user} created and saved.`)
       } catch (e) {
         console.log('Error when saving the user', e)
+        throw new UserInputError(e.message, { invalidArgs: args })
       }
-      console.log('no user added, returning null')
-      return null
+      console.log(`User ${user} created and saved.`)
+      return user
     },
     // The method enables changing the attributes of existing users
     editUser: async (root, args, context) => {
