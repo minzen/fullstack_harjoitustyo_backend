@@ -261,6 +261,13 @@ const resolvers = {
     // The method enables changing the attributes of existing users
     editUser: async (root, args, context) => {
       console.log('editUser', args)
+      if (!args.email || args.email.length < 4) {
+        throw new UserInputError(
+          'Invalid email address (minimum length 4 characters',
+          { invalidArgs: args }
+        )
+      }
+
       const currentUser = context.currentUser
       if (!currentUser) {
         throw new AuthenticationError(NOT_AUTHENTICATED)
@@ -271,8 +278,8 @@ const resolvers = {
         currentUser.email = args.email
         return await currentUser.save()
       } catch (e) {
-        console.log('error when updateing the user data', e)
-        return null
+        console.log('error when updating the user data', e)
+        throw new UserInputError(e.message, { invalidArgs: args })
       }
     },
     changePassword: async (root, args, context) => {
@@ -286,12 +293,29 @@ const resolvers = {
       const newPassword = args.newPassword
       const newPassword2 = args.newPassword2
 
+      if (
+        !currentPassword ||
+        !newPassword ||
+        !newPassword2 ||
+        currentPassword.length < 6 ||
+        newPassword.length < 6 ||
+        newPassword2.length < 6
+      ) {
+        throw new UserInputError(
+          'Invalid password (minimum length 6 characters)',
+          { invalidArgs: args }
+        )
+      }
+
       // In case the provided passwords do not match, return null
       if (newPassword !== newPassword2) {
         console.log(
-          'The provided new passwords differ from each other, returning null'
+          'The provided new passwords differ from each other, throwing an exception'
         )
-        return null
+        throw new UserInputError(
+          'The provided passwords differ from each other',
+          { invalidArgs: args }
+        )
       }
 
       const passwordOk = await bcrypt.compare(
@@ -311,7 +335,7 @@ const resolvers = {
         return await currentUser.save()
       } catch (e) {
         console.log('Error when saving the user', currentUser)
-        return null
+        throw new UserInputError(e.message, { invalidArgs: args })
       }
     },
     // The method enables the login for a user and takes the email address and the password as parameters
