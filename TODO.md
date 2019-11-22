@@ -40,4 +40,4 @@
 - Validointi
 - Graafiset viilaukset (himmennetyt näkymät, popup-efektit)
 - Muistiinpanojen jakaminen ja kommentointi
--
+- Lisää e2e-testejä

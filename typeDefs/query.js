@@ -22,6 +22,11 @@ const query = gql`
     Returns a Note by its id (if belonging to the user) or null, if not available
     """
     findNoteById(id: String!): Note
+    """
+    Enables resetting the test DB to the initial state to ensure the same conditions for each test
+    Return value: Boolean true if the operation was successful, otherwise false
+    """
+    resetTestDb: Boolean
   }
 `
 

@@ -1,8 +1,6 @@
 const { gql } = require('apollo-server')
 
 const mutation = gql`
-  # scalar Date
-
   type Mutation {
     """
     Adds a Note for the logged in User (requires authentication).

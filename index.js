@@ -127,6 +127,25 @@ const resolvers = {
       return await Note.findById({ _id: args.id, user: currentUser }).populate(
         'user'
       )
+    },
+    // The method enables resetting the DB to its desired initial state to ensure correct conditions for the E2E tests
+    resetTestDb: async () => {
+      console.log(process.env.NODE_ENV)
+      if (process.env.NODE_ENV === 'e2e') {
+        console.log(
+          'resetTestDb(): resetting the database by removing the users and the notes'
+        )
+        await User.deleteMany({})
+        await Note.deleteMany({})
+        console.log(
+          'resetTestDb(): calling the method initE2eDb() to create initial test content'
+        )
+        await initE2eDb()
+        return true
+      } else {
+        console.log('resetTestDb() is available only for the e2e mode')
+        return false
+      }
     }
 
     // TODO: Add queries for: getNotesByUserAndKeyword etc.
