@@ -16,9 +16,9 @@ const schema = new mongoose.Schema({
   keywords: {
     type: [{ type: String }]
   },
-  // modified: {
-  //   type: Date
-  // },
+  modified: {
+    type: String
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'

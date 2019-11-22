@@ -19,10 +19,10 @@ const note = gql`
     keywords: an array of Strings containing the relevant keywords used for categorising Notes
     """
     keywords: [String]
-    # """
-    # modified: timestamp of the latest modification of a Note (using the custom scalar type Date)
-    # """
-    # modified: Date
+    """
+    modified: timestamp of the latest modification of a Note (stored as String for the easiness: no existing date type yet, and the developer did not want to implement a new scalar type)
+    """
+    modified: String
     """
     user: Reference to the User that has created the Note
     """

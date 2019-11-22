@@ -1,5 +1,3 @@
-// import GraphQLScalarType from 'graphql'
-// import Kind from 'graphql/language'
 const {
   ApolloServer,
   gql,
@@ -107,26 +105,6 @@ let notes = []
 let users = []
 
 const resolvers = {
-  // // The scalar type Date as presented in the Apollo Documentation
-  // // https://www.apollographql.com/docs/graphql-tools/scalars/
-  // Date: new GraphQLScalarType({
-  //   name: 'Date',
-  //   description: 'Date',
-  //   parseValue(value) {
-  //     // value from the client
-  //     return new Date(value)
-  //   },
-  //   serialize(value) {
-  //     // value sent to the client
-  //     return value.getTime()
-  //   },
-  //   parseLiteral(ast) {
-  //     if (ast.kind === Kind.INT) {
-  //       return new Date(ast.value)
-  //     }
-  //     return null
-  //   }
-  // }),
   Query: {
     me: (root, args, context) => {
       console.log('me()', args, 'currentUser: ', context.currentUser)
@@ -155,6 +133,7 @@ const resolvers = {
   },
   Mutation: {
     // TODO: tests
+    // The method enables adding a note by an authenticated user
     addNote: async (root, args, context) => {
       console.log('addNote', args)
       const currentUser = context.currentUser
@@ -165,8 +144,8 @@ const resolvers = {
         title: args.title,
         content: args.content,
         keywords: args.keywords,
-        user: currentUser
-        // modified: new Date()
+        user: currentUser,
+        modified: Date.now().toString()
       })
 
       try {
@@ -178,6 +157,7 @@ const resolvers = {
       console.log(`Note ${note} saved.`)
       return note
     },
+    // The method enables deleting a note belonging to an authenticated user
     deleteNote: async (root, args, context) => {
       console.log('deleteNote', args)
       const currentUser = context.currentUser
@@ -210,7 +190,7 @@ const resolvers = {
       }
       return null
     },
-    // The method enables editing the notes of an authenticated user
+    // The method enables editing of a note belonging to an authenticated user
     editNote: async (root, args, context) => {
       console.log('editNote', args)
       const currentUser = context.currentUser
@@ -224,8 +204,8 @@ const resolvers = {
         {
           title: args.title,
           content: args.content,
-          keywords: args.keywords
-          // modified: new Date()
+          keywords: args.keywords,
+          modified: Date.now().toString()
         }
       ).populate('user')
     },
