@@ -128,6 +128,28 @@ const resolvers = {
         'user'
       )
     },
+
+    allKeywordsInNotesOfUser: async (root, args, context) => {
+      const currentUser = context.currentUser
+      if (!currentUser) {
+        throw new AuthenticationError(NOT_AUTHENTICATED)
+      }
+      const notes = await Note.find({ user: currentUser })
+      let keywordsArr = []
+      if (notes) {
+        notes.forEach(note => {
+          if (note.keywords) {
+            note.keywords.forEach(keyword => {
+              if (!keywordsArr.includes(keyword)) {
+                keywordsArr.push(keyword)
+              }
+            })
+          }
+        })
+      }
+      console.log(keywordsArr)
+      return keywordsArr
+    },
     // The method enables resetting the DB to its desired initial state to ensure correct conditions for the E2E tests
     resetTestDb: async () => {
       console.log(process.env.NODE_ENV)

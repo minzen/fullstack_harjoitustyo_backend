@@ -27,6 +27,12 @@ const query = gql`
     Return value: Boolean true if the operation was successful, otherwise false
     """
     resetTestDb: Boolean
+    """
+    Returns all the keywords that have been used on the notes by the current user.
+    This is useful to provide for the search so that there are ready alternatives from which the user may choose from.
+    Return value: an Array of Strings (may be empty)
+    """
+    allKeywordsInNotesOfUser: [String]
   }
 `
 
