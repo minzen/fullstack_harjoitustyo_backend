@@ -33,6 +33,12 @@ const query = gql`
     Return value: an Array of Strings (may be empty)
     """
     allKeywordsInNotesOfUser: [String]
+    """
+    Returns all the notes containing a keyword or part of it by the current user.
+    Parameters: Keyword as String
+    Return value: an Array of Notes (may be empty)
+    """
+    notesByKeyword(keyword: String): [Note]
   }
 `
 

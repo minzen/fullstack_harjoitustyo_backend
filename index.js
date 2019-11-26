@@ -128,7 +128,6 @@ const resolvers = {
         'user'
       )
     },
-
     allKeywordsInNotesOfUser: async (root, args, context) => {
       const currentUser = context.currentUser
       if (!currentUser) {
@@ -168,6 +167,33 @@ const resolvers = {
         console.log('resetTestDb() is available only for the e2e mode')
         return false
       }
+    },
+    notesByKeyword: async (root, args, context) => {
+      console.log('notesByKeyword(): obtaining notes by the keywords')
+      const currentUser = context.currentUser
+      if (!currentUser) {
+        throw new AuthenticationError(NOT_AUTHENTICATED)
+      }
+      // TODO: Refactor this to use a query
+      const notesOfAUser = await Note.find({ user: currentUser })
+      let notesWithKeywords = []
+      if (notesOfAUser) {
+        notesOfAUser.forEach(note => {
+          if (note.keywords) {
+            note.keywords.forEach(keyword => {
+              // If the keyword is included and not in the array, add the note to the array
+              if (
+                keyword.includes(args.keyword.toLowerCase()) &&
+                !notesWithKeywords.includes(note)
+              ) {
+                notesWithKeywords.push(note)
+              }
+            })
+          }
+        })
+      }
+      console.log(notesWithKeywords)
+      return notesWithKeywords
     }
 
     // TODO: Add queries for: getNotesByUserAndKeyword etc.
