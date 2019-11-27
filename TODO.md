@@ -15,6 +15,10 @@
 - Validointi:
   - regexit
   - email eihän ole duplikaatteja
+- Luo webpack-konfiguraatio koko sovellukselle
+- ota lint käyttöön
+- Sovelluksen esittely
+- dark / light -teeman valinta profiiliin
 
 ## React Native
 
