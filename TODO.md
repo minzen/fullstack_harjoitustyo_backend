@@ -19,6 +19,10 @@
 - ota lint käyttöön
 - Sovelluksen esittely
 - dark / light -teeman valinta profiiliin
+- Tilin käyttöönotto ja vahvistus vasta, kun sähköpostilinkkiä on klikattu
+- ensimmäisellä kerralla näytetään; jos käyttäjä on klikannut sen piiloon, ei näytetä seuraavalla kerralla (tieto evästeeseen?)
+- CORS?
+-
 
 ## React Native
 
