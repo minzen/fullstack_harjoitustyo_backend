@@ -7,7 +7,8 @@
     "start": "NODE_ENV=production node index.js",
     "watch": "NODE_ENV=development nodemon index.js",
     "test": "NODE_ENV=test jest --runInBand ./test",
-    "e2e": "NODE_ENV=e2e node index.js"
+    "e2e": "NODE_ENV=e2e node index.js",
+    "lint": "eslint ."
   },
   "author": "Feetu Nyrhinen <feetu.nyrhinen@gmail.com>",
   "license": "MIT",
