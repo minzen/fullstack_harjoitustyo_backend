@@ -22,7 +22,9 @@
 - Tilin käyttöönotto ja vahvistus vasta, kun sähköpostilinkkiä on klikattu
 - ensimmäisellä kerralla näytetään; jos käyttäjä on klikannut sen piiloon, ei näytetä seuraavalla kerralla (tieto evästeeseen?)
 - CORS?
--
+- Luo loggeri middleware
+- Webpack-konfiguraatio deployausta varten
+- E2E-testien korjaaminen
 
 ## React Native
 
