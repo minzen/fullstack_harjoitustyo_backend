@@ -1,13 +1,10 @@
 const {
   ApolloServer,
-  gql,
   UserInputError,
   AuthenticationError,
-  PubSub
 } = require('apollo-server')
 require('dotenv').config()
 const { typeDefs } = require('./typeDefs')
-const uuid = require('uuid/v1')
 const User = require('./models/user')
 const Note = require('./models/note')
 const Token = require('./models/token')
@@ -16,8 +13,6 @@ mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const JWT_SECRET = process.env.JWT_SECRET
-// const pubsub = new PubSub()
 const NOT_AUTHENTICATED = 'not authenticated'
 
 const createPwdHash = async password => {
@@ -100,9 +95,6 @@ if (process.env.NODE_ENV === 'e2e') {
 } else {
   startDb()
 }
-
-let notes = []
-let users = []
 
 const resolvers = {
   Query: {

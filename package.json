@@ -25,6 +25,7 @@
     "nodemon": "^1.19.4"
   },
   "devDependencies": {
+    "eslint": "^6.7.1",
     "jest": "^24.9.0",
     "jest-cli": "^24.9.0"
   },
