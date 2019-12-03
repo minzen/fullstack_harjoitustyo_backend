@@ -9,15 +9,12 @@
 ## Frontend
 
 - Design ja toteutus: komponentit ja näkymät
-- Datan haku ApolloClientilla
-- Token-perustainen autentikointi
-- Toteutus :)
 - Validointi:
   - regexit
   - email eihän ole duplikaatteja
 - Luo webpack-konfiguraatio koko sovellukselle
 - ota lint käyttöön
-- Sovelluksen esittely
+- Responsiivisuus-ongelmien korjaaminen
 - dark / light -teeman valinta profiiliin
 - Tilin käyttöönotto ja vahvistus vasta, kun sähköpostilinkkiä on klikattu
 - ensimmäisellä kerralla näytetään; jos käyttäjä on klikannut sen piiloon, ei näytetä seuraavalla kerralla (tieto evästeeseen?)
