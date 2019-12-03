@@ -1,7 +1,7 @@
 const {
   ApolloServer,
   UserInputError,
-  AuthenticationError,
+  AuthenticationError
 } = require('apollo-server')
 require('dotenv').config()
 const { typeDefs } = require('./typeDefs')
@@ -269,34 +269,34 @@ const resolvers = {
       ).populate('user')
     },
     // The method takes care of creating new users
-    addUser: async (root, args) => {
-      console.log('addUser', args)
+    // addUser: async (root, args) => {
+    //   console.log('addUser', args)
 
-      if (!args.password || args.password.length < 6) {
-        throw new UserInputError(
-          'Invalid password (minimum length 6 characters)',
-          { invalidArgs: args.password }
-        )
-      }
+    //   if (!args.password || args.password.length < 6) {
+    //     throw new UserInputError(
+    //       'Invalid password (minimum length 6 characters)',
+    //       { invalidArgs: args.password }
+    //     )
+    //   }
 
-      const passwordHash = await createPwdHash(args.password)
-      console.log('passwordHash', passwordHash)
-      const user = new User({
-        email: args.email,
-        passwordHash: passwordHash,
-        givenname: args.givenname,
-        surname: args.surname
-      })
+    //   const passwordHash = await createPwdHash(args.password)
+    //   console.log('passwordHash', passwordHash)
+    //   const user = new User({
+    //     email: args.email,
+    //     passwordHash: passwordHash,
+    //     givenname: args.givenname,
+    //     surname: args.surname
+    //   })
 
-      try {
-        await user.save()
-      } catch (e) {
-        console.log('Error when saving the user', e)
-        throw new UserInputError(e.message, { invalidArgs: args })
-      }
-      console.log(`User ${user} created and saved.`)
-      return user
-    },
+    //   try {
+    //     await user.save()
+    //   } catch (e) {
+    //     console.log('Error when saving the user', e)
+    //     throw new UserInputError(e.message, { invalidArgs: args })
+    //   }
+    //   console.log(`User ${user} created and saved.`)
+    //   return user
+    // },
     // The method enables changing the attributes of existing users
     editUser: async (root, args, context) => {
       console.log('editUser', args)

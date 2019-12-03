@@ -24,17 +24,17 @@ const mutation = gql`
       content: String!
       keywords: [String]
     ): Note
-    """
-    Enables adding a User to the database.
-    Parameters: email (String, mandatory), password (String, mandatory), givenname (String), surname (String).
-    Return value: Created user or null
-    """
-    addUser(
-      email: String!
-      password: String!
-      givenname: String
-      surname: String
-    ): User
+    # """
+    # Enables adding a User to the database.
+    # Parameters: email (String, mandatory), password (String, mandatory), givenname (String), surname (String).
+    # Return value: Created user or null
+    # """
+    # addUser(
+    #   email: String!
+    #   password: String!
+    #   givenname: String
+    #   surname: String
+    # ): User
     """
     Enables editing the current User (e.g. change email, password or name).
     Parameters: email (String), password (String), givenname (String), surname (String).
