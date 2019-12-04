@@ -22,6 +22,7 @@
 - CORS?
 - Luo loggeri middleware
 - E2E-testien korjaaminen
+- Muistiinpanojen järjestäminen raahaamalla
 
 ## React Native
 
