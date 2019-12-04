@@ -109,7 +109,9 @@ const resolvers = {
       if (!currentUser) {
         return null
       }
-      return await Note.find({ user: currentUser }).populate('user')
+      return await Note.find({ user: currentUser })
+        .sort({ modified: -1 })
+        .populate('user')
     },
     findNoteById: async (root, args, context) => {
       const currentUser = context.currentUser

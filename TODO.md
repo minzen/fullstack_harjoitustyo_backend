@@ -2,6 +2,7 @@
 
 ## Backend
 
+- Deployment-skripti?
 - Testit
 - Subscriptionit
 - Tsekkaa, kuinka Apollo Server saadaan käyttämään https:ää
@@ -20,8 +21,8 @@
 - ensimmäisellä kerralla näytetään; jos käyttäjä on klikannut sen piiloon, ei näytetä seuraavalla kerralla (tieto evästeeseen?)
 - CORS?
 - Luo loggeri middleware
-- Webpack-konfiguraatio deployausta varten
 - E2E-testien korjaaminen
+- Muistiinpanojen järjestäminen raahaamalla
 
 ## React Native
 
