@@ -14,7 +14,6 @@
   - regexit
   - email eihän ole duplikaatteja
 - Luo webpack-konfiguraatio koko sovellukselle
-- ota lint käyttöön
 - Responsiivisuus-ongelmien korjaaminen
 - dark / light -teeman valinta profiiliin
 - Tilin käyttöönotto ja vahvistus vasta, kun sähköpostilinkkiä on klikattu
@@ -23,6 +22,7 @@
 - Luo loggeri middleware
 - E2E-testien korjaaminen
 - Muistiinpanojen järjestäminen raahaamalla
+- Lokalisointi (vähintään englanti ja suomi)
 
 ## React Native
 
