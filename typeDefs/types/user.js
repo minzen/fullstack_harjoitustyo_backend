@@ -23,6 +23,14 @@ const user = gql`
     surname: the family name of a User
     """
     surname: String
+    """
+    authToken: a token that is used to verify the user (after the registration there is a check, before the account is activated)
+    """
+    authToken: String
+    """
+    isActivated: indicates whether the user account has been activated. Only an active user is able to log in and use the system with the account.
+    """
+    isActivated: Boolean!
   }
 `
 

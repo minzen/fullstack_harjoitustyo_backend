@@ -22,7 +22,7 @@
 - Luo loggeri middleware
 - E2E-testien korjaaminen
 - Muistiinpanojen järjestäminen raahaamalla
-- Lokalisointi (vähintään englanti ja suomi)
+- Ota käyttöön double opt-in rekisteröinti-lomakkeeseen (emailin lähetys ja vasta hyväksymislinkin klikkauksen jälkeen käyttäjätilin vahvistaminen)
 
 ## React Native
 

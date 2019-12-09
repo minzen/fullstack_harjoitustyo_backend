@@ -23,6 +23,7 @@
     "mongodb-memory-server": "^6.0.1",
     "mongoose": "^5.7.8",
     "mongoose-unique-validator": "^2.0.3",
+    "nodemailer": "^6.4.0",
     "nodemon": "^1.19.4"
   },
   "devDependencies": {

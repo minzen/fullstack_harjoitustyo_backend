@@ -19,7 +19,12 @@ const schema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Note'
     }
-  ]
+  ],
+  authToken: String,
+  isActivated: {
+    type: Boolean,
+    required: true
+  }
 })
 schema.plugin(uniqueValidator)
 module.exports = mongoose.model('User', schema)

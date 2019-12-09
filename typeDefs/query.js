@@ -39,6 +39,14 @@ const query = gql`
     Return value: an Array of Notes (may be empty)
     """
     notesByKeyword(keyword: String): [Note]
+    """
+    This method is used for verification of the token sent to the user in an Email after the registration. The user is supposed to
+    click the link on the Email and if the token is OK, the user account is activated.
+    This double opt-in should prevent most of the inappropriate registration attempts, as it requires an access to the user's email as well.
+    Parameters: token (String, mandatory)
+    Return value: Changed user or null
+    """
+    verifyAccount(token: String!): User
   }
 `
 

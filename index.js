@@ -13,6 +13,9 @@ mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const crypto = require('crypto')
+const querystring = require('querystring')
+const emailsender = require('./emailsender')
 const NOT_AUTHENTICATED = 'not authenticated'
 
 const createPwdHash = async password => {
@@ -188,6 +191,22 @@ const resolvers = {
       }
       console.log(notesWithKeywords)
       return notesWithKeywords
+    },
+    // With the method a token provided by the user is checked and a corresponding user account is activated, if the token is ok
+    verifyAccount: async (root, args) => {
+      console.log('verifyAccount, args:', args)
+      const token = args.token
+      console.log('token', token)
+
+      const user = await User.findOne({ authToken: token })
+      console.log('setting account activated for user', user)
+      if (user) {
+        user.isActivated = true
+        await user.save()
+        console.log('Account activated for', user)
+        await sendEmailAccountConfirmed(user)
+      }
+      return user
     }
 
     // TODO: Add queries for: getNotesByUserAndKeyword etc.
@@ -283,15 +302,27 @@ const resolvers = {
 
       const passwordHash = await createPwdHash(args.password)
       console.log('passwordHash', passwordHash)
+
+      // Create an authentication token used to confirm the account
+      const seed = await crypto.randomBytes(20)
+      const authToken = await crypto
+        .createHash('sha1')
+        .update(seed + args.email)
+        .digest('hex')
+      console.log('authToken created in the registration', authToken)
+
       const user = new User({
         email: args.email,
         passwordHash: passwordHash,
         givenname: args.givenname,
-        surname: args.surname
+        surname: args.surname,
+        authToken: authToken,
+        isActivated: false
       })
 
       try {
         await user.save()
+        await sendEmailAccountCreatedShouldBeActivated(user)
       } catch (e) {
         console.log('Error when saving the user', e)
         throw new UserInputError(e.message, { invalidArgs: args })
@@ -391,6 +422,13 @@ const resolvers = {
         throw new UserInputError('wrong credentials')
       }
 
+      if (!user.isActivated) {
+        console.log('The account has to be activated, before it can be used.')
+        throw new UserInputError(
+          'The account has not been activated. Please check your emails for instructions.'
+        )
+      }
+
       const passwordOk = await bcrypt.compare(typedPwd, user.passwordHash)
       console.log('passwordOk', passwordOk)
       if (!passwordOk) {
@@ -437,6 +475,66 @@ const getTokenFromReq = request => {
     return authorization.substring(7)
   }
   return null
+}
+
+const sendEmailAccountCreatedShouldBeActivated = async user => {
+  const authToken = user.authToken
+  if (!authToken) {
+    throw new Error(
+      'No auth token available, cannot proceed with the registration'
+    )
+  }
+  //TODO: Refactor this
+  let queryStr =
+    'http://localhost:4000/graphql?query={verifyAccount(token:%22' +
+    user.authToken +
+    '%22){email}}'
+  const confirmationLink = queryStr
+  console.log('confirmation link', confirmationLink)
+  const toAddress = user.email
+  const subject = 'A Memory Tracks account created'
+  const messageBody =
+    'Welcome to Memory Tracks, ' +
+    user.givenname +
+    ' ' +
+    user.surname +
+    '! ' +
+    'Your account has been created, but it has to be activated before you can log in with your credentials. To accomplish this, please visit ' +
+    confirmationLink +
+    ' by using your Web browser to activate your account. \nBest Regards, \nMemory Tracks support team'
+
+  const messageBodyHtml =
+    '<h1>Welcome to Memory Tracks, ' +
+    user.givenname +
+    ' ' +
+    user.surname +
+    '! </h1>' +
+    '<p>Your account has been created, but it has to be activated before you can log in with your credentials. ' +
+    'To accomplish this, please visit ' +
+    confirmationLink +
+    ' by using your Web browser to activate your account.</p>' +
+    '<p><strong>Best Regards, <br/>Memory Tracks support team</strong></p>'
+  // Proceed with the actual send
+  await emailsender.main(toAddress, subject, messageBody, messageBodyHtml)
+}
+
+const sendEmailAccountConfirmed = async user => {
+  const toAddress = user.email
+  const subject = 'A Memory Tracks account confirmed'
+  const messageBody =
+    'Welcome to Memory Tracks! Welcome, ' +
+    user.givenname +
+    ' ' +
+    user.surname +
+    '!, your account has been created and you may now log in with your credentials. Best Regards, Memory Tracks support team'
+  const messageBodyHtml =
+    '<h1>Welcome to Memory Tracks!</h1> <p>Welcome, <strong>' +
+    user.givenname +
+    ' ' +
+    user.surname +
+    '</strong>!</p><p>Your account has been created and you may now <a href="http://localhost:3000">log in</a> with your credentials.</p><p>Best Regards, <br/>Memory Tracks support team</p>'
+  // Proceed with the actual send
+  await emailsender.main(toAddress, subject, messageBody, messageBodyHtml)
 }
 
 const server = new ApolloServer({
