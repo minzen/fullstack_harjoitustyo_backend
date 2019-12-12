@@ -9,7 +9,8 @@ const mutation = gql`
     """
     addNote(title: String!, content: String!, keywords: [String]): Note
     """
-    Deletes a Note of a User by its ID (requires authentication). Parameters: ID (String, mandatory).
+    Deletes a Note of a User by its ID (requires authentication).
+    Parameters: ID (String, mandatory).
     Return value: ID of the deleted Note as String or null
     """
     deleteNote(id: ID!): String
@@ -57,10 +58,18 @@ const mutation = gql`
       newPassword2: String!
     ): User
     """
-    Enables the login of a User. Parameters: email (String, mandatory), password (String, mandatory).
+    Enables the login of a User.
+    Parameters: email (String, mandatory), password (String, mandatory).
     Return value: Token entity containing the access token value or null
     """
     login(email: String!, password: String!): Token
+    """
+    Takes care of sending an email, if the user has forgotten her/his password. With the instructions provided on the email
+    the user is able to change her/his password.
+    Parameters: email (String, mandatory)
+    Return value: Boolean indicating whether the email could be sent
+    """
+    passwordReset(email: String!): Boolean
   }
 `
 

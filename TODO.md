@@ -16,13 +16,12 @@
 - Luo webpack-konfiguraatio koko sovellukselle
 - Responsiivisuus-ongelmien korjaaminen
 - dark / light -teeman valinta profiiliin
-- Tilin käyttöönotto ja vahvistus vasta, kun sähköpostilinkkiä on klikattu
 - ensimmäisellä kerralla näytetään; jos käyttäjä on klikannut sen piiloon, ei näytetä seuraavalla kerralla (tieto evästeeseen?)
 - CORS?
 - Luo loggeri middleware
 - E2E-testien korjaaminen
 - Muistiinpanojen järjestäminen raahaamalla
-- Ota käyttöön double opt-in rekisteröinti-lomakkeeseen (emailin lähetys ja vasta hyväksymislinkin klikkauksen jälkeen käyttäjätilin vahvistaminen)
+- Salasana unohtunut -toiminto
 
 ## React Native
 

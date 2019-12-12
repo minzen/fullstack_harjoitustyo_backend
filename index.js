@@ -14,7 +14,6 @@ mongoose.set('useCreateIndex', true)
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
-const querystring = require('querystring')
 const emailsender = require('./emailsender')
 const NOT_AUTHENTICATED = 'not authenticated'
 
@@ -303,20 +302,14 @@ const resolvers = {
       const passwordHash = await createPwdHash(args.password)
       console.log('passwordHash', passwordHash)
 
-      // Create an authentication token used to confirm the account
-      const seed = await crypto.randomBytes(20)
-      const authToken = await crypto
-        .createHash('sha1')
-        .update(seed + args.email)
-        .digest('hex')
-      console.log('authToken created in the registration', authToken)
+      const generatedAuthToken = await generateAuthToken(args.email)
 
       const user = new User({
         email: args.email,
         passwordHash: passwordHash,
         givenname: args.givenname,
         surname: args.surname,
-        authToken: authToken,
+        authToken: generatedAuthToken,
         isActivated: false
       })
 
@@ -444,6 +437,34 @@ const resolvers = {
 
       console.log('token', token)
       return new Token({ value: token })
+    },
+    // The method enables the user to request for a password reset in case the password is forgotten.
+    passwordReset: async (root, args) => {
+      console.log(
+        'Password forgotten, create a new auth token to the user, send it in an email to enable the switch of a password.'
+      )
+      const typedEmail = args.email
+      // Obtain the user by the Email and set a new authToken that also will be sent with the password forgotten email
+      const user = await User.findOne({ email: typedEmail })
+      if (!user) {
+        console.log('User cannot be found')
+        return false
+      }
+
+      try {
+        const generatedAuthToken = await generateAuthToken(typedEmail)
+        console.log('generatedAuthToken', generatedAuthToken)
+        // Set the new authToken
+        user.authToken = generatedAuthToken
+        await user.save()
+        await sendEmailPasswordForgotten(user)
+      } catch (error) {
+        console.log('Error when executing password forgotten functionality')
+        return false
+      }
+      // Send an email about the password reset and include the user auth token to ensure the operation only is possible if a valid token is delivered
+      console.log('Password reset request sent to the user', user.email)
+      return true
     }
   }
 }
@@ -535,6 +556,34 @@ const sendEmailAccountConfirmed = async user => {
     '</strong>!</p><p>Your account has been created and you may now <a href="http://localhost:3000">log in</a> with your credentials.</p><p>Best Regards, <br/>Memory Tracks support team</p>'
   // Proceed with the actual send
   await emailsender.main(toAddress, subject, messageBody, messageBodyHtml)
+}
+
+const sendEmailPasswordForgotten = async user => {
+  const authToken = user.authToken
+  const passwordResetLink =
+    'http://localhost:3000/passwordreset?token=' + authToken
+  const toAddress = user.email
+  const subject = '[Memory Tracks] Password reset request'
+  const messageBody =
+    'Password reset\nSomeone using your email (hopefully you!) has requested for a password reset. You can confirm the reset and set a new password by using the following link ' +
+    passwordResetLink +
+    '.'
+  const messageBodyHtml =
+    '<h1>Password reset</h1><p>Someone using your email (hopefully you!) has requested for a password reset. You can confirm the reset and set a new password by using the following link ' +
+    passwordResetLink +
+    '.</p>'
+  await emailsender.main(toAddress, subject, messageBody, messageBodyHtml)
+}
+
+const generateAuthToken = async email => {
+  // Create an authentication token used to confirm the account
+  const seed = await crypto.randomBytes(20)
+  const authToken = await crypto
+    .createHash('sha1')
+    .update(seed + email)
+    .digest('hex')
+  console.log('authToken created', authToken)
+  return authToken
 }
 
 const server = new ApolloServer({
