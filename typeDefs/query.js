@@ -19,6 +19,10 @@ const query = gql`
     """
     allNotes: [Note!]
     """
+    Returns all not archived notes of a user
+    """
+    notArchivedNotes: [Note!]
+    """
     Returns a Note by its id (if belonging to the user) or null, if not available
     """
     findNoteById(id: String!): Note

@@ -22,6 +22,8 @@
 - E2E-testien korjaaminen
 - Muistiinpanojen järjestäminen raahaamalla
 - Salasana unohtunut -toiminto
+- Sovelluksen kielen valinta käyttäjäkohtaiseksi ja tallentaminen käyttäjän tietoihin
+- Muistiinpanojen arkistointi (jos käyttäjä haluaa myöhemmin palata aiheeseen, mutta saada osan aiheista pois näkyvistä haluttaessa)
 
 ## React Native
 

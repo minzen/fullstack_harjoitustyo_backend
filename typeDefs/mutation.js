@@ -70,6 +70,12 @@ const mutation = gql`
     Return value: Boolean indicating whether the email could be sent
     """
     passwordReset(email: String!): Boolean
+    """
+    Enables archiving of notes. The user might want to hide some notes that are not interesting at the moment.
+    Parameters: id (ID, mandatory)
+    Return value: ID of the archived note or null
+    """
+    archiveNote(id: ID!): String
   }
 `
 

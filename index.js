@@ -115,6 +115,15 @@ const resolvers = {
         .sort({ modified: -1 })
         .populate('user')
     },
+    notArchivedNotes: async (root, args, context) => {
+      const currentUser = context.currentUser
+      if (!currentUser) {
+        return null
+      }
+      return await Note.find({ user: currentUser, archived: false })
+        .sort({ modified: -1 })
+        .populate('user')
+    },
     findNoteById: async (root, args, context) => {
       const currentUser = context.currentUser
       if (!currentUser) {
@@ -465,6 +474,39 @@ const resolvers = {
       // Send an email about the password reset and include the user auth token to ensure the operation only is possible if a valid token is delivered
       console.log('Password reset request sent to the user', user.email)
       return true
+    },
+    archiveNote: async (root, args, context) => {
+      console.log('archiveNote', args)
+      const currentUser = context.currentUser
+      if (!currentUser) {
+        throw new AuthenticationError(NOT_AUTHENTICATED)
+      }
+      const idOfNoteToArchive = args.id
+
+      let noteToArchive = await Note.findById(idOfNoteToArchive)
+      if (noteToArchive) {
+        if (!noteToArchive.user.equals(currentUser._id)) {
+          console.log(
+            `cannot archive the note ${idOfNoteToArchive} as it is not owned by the user`
+          )
+          return null
+        }
+      }
+
+      try {
+        noteToArchive.archived = true
+        noteToArchive.save()
+        console.log('archived', noteToArchive)
+        if (noteToArchive) {
+          console.log(`note with the id ${noteToArchive} archived`)
+          return idOfNoteToArchive
+        } else {
+          console.log('not archived')
+        }
+      } catch (e) {
+        console.log('error when archiving an item', idOfNoteToArchive)
+      }
+      return null
     }
   }
 }

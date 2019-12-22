@@ -19,6 +19,9 @@ const schema = new mongoose.Schema({
   modified: {
     type: String
   },
+  archived: {
+    type: Boolean
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'

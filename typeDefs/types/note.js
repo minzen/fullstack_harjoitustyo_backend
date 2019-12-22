@@ -24,6 +24,10 @@ const note = gql`
     """
     modified: String
     """
+    archived: denotes, whether the note has been archived
+    """
+    archived: Boolean
+    """
     user: Reference to the User that has created the Note
     """
     user: User
