@@ -24,6 +24,7 @@
 - Salasana unohtunut -toiminto
 - Sovelluksen kielen valinta käyttäjäkohtaiseksi ja tallentaminen käyttäjän tietoihin
 - Muistiinpanojen arkistointi (jos käyttäjä haluaa myöhemmin palata aiheeseen, mutta saada osan aiheista pois näkyvistä haluttaessa)
+- Lisää sivutus muistiinpanoille
 
 ## React Native
 
