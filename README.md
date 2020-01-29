@@ -9,9 +9,9 @@ Tämä sovellus on rakennettu Full Stack Web Development -kurssille. Projekti on
 
 ## Backend-toteutus
 
-Backend-toteutus rakentuu pääosin teknologioiden MongoDB Atlas, Mongoose, GraphQL ja NodeJS päälle. GraphQL:n päälle rakentuva dokumentoitu API on tutkittavissa palvelimella (kts. seuraava kappale).
+Backend-toteutus rakentuu pääosin teknologioiden MongoDB Atlas, Mongoose, GraphQL ja NodeJS päälle. GraphQL:n päälle rakentuva dokumentoitu API on tutkittavissa palvelimella (kts. seuraava kappale). 
 
-Backendin (eli GraphQL-API, joka laukkaa ApolloServerin päällä) tämänhetkinen versio löytyy osoitteesta: http://gyarados.feetunyrhinen.de:4000/graphql
+Backendin (eli GraphQL-API, joka laukkaa ApolloServerin päällä) tämänhetkinen versio löytyy osoitteesta: https://sleepy-woodland-08922.herokuapp.com/graphql
 
 ## Työaikakirjanpito
 
