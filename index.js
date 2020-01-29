@@ -631,7 +631,9 @@ const generateAuthToken = async email => {
 const server = new ApolloServer({
   typeDefs,
   context,
-  resolvers
+  resolvers,
+  introspection: true, // enables introspection of the schema
+  playground: true, // enables the actual playground
 })
 
 server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
