@@ -495,7 +495,7 @@ const resolvers = {
 
       try {
         noteToArchive.archived = true
-        noteToArchive.save()
+        await noteToArchive.save()
         console.log('archived', noteToArchive)
         if (noteToArchive) {
           console.log(`note with the id ${noteToArchive} archived`)
@@ -634,6 +634,6 @@ const server = new ApolloServer({
   resolvers
 })
 
-server.listen().then(({ url }) => {
+server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })
