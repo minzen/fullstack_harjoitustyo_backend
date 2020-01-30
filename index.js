@@ -232,6 +232,7 @@ const resolvers = {
         title: args.title,
         content: args.content,
         keywords: args.keywords,
+        archived: false,
         user: currentUser,
         modified: Date.now().toString()
       })
@@ -293,6 +294,7 @@ const resolvers = {
           title: args.title,
           content: args.content,
           keywords: args.keywords,
+          archived: args.archived,
           modified: Date.now().toString()
         }
       ).populate('user')
