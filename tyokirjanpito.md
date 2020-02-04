@@ -68,5 +68,5 @@
 | 29.01.2020 | 2 h | Backend deployattu Herokuun, konfiguraatiomuutoksia. Virheenselvittelyä, konfiguraatiomuutoksia Fronttiin ja deployattu useita kertoja. Vihdoin toimii! |
 | 30.01.2020 | 3 h | Korjattu ongelma muistiinpanojen tallennuksessa (uusi muistiinpano merkittiin epähuomiossa arkistoiduksi). Tutkittu Githubin CI-toimintoja ja automatisaation mahdollisuuksia. |
 | 01.02.2020 | 2 h | CI-toiminnallisuus otettu osittain käyttöön Frontendille. Hirveää säätöä konffauksen kanssa, mutta lopulta deployaus githubin pages -sivustolle toimii. Testien ajo ja Backendin automatisointi vielä puuttuu. |
-
-yht. 143,5 h
+| 04.02.2020 | 1 h | Integroitu kirjasto sivutusta (pagination) varten ja tutustuttu dokumentaatioon. Ensimmäiset kokeilut tehty |  
+yht. 144,5 h
