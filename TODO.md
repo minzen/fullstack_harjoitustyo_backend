@@ -24,7 +24,8 @@
 - Salasana unohtunut -toiminto
 - Sovelluksen kielen valinta käyttäjäkohtaiseksi ja tallentaminen käyttäjän tietoihin
 - Lisää sivutus muistiinpanoille
-- Unarchive-toiminto jo arkistoiduille
+- Unarchive-toiminto jo arkistoiduille muistiinpanoille
+- Testaa myös huonoilla verkkoyhteyksillä
 
 ## React Native
 
