@@ -54,7 +54,8 @@ const initE2eDb = async () => {
     email: email,
     passwordHash: passwordHash,
     givenname: givenname,
-    surname: surname
+    surname: surname,
+    isActivated: true
   })
 
   try {
