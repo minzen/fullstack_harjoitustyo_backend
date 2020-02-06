@@ -66,7 +66,9 @@ const initE2eDb = async () => {
       content:
         'https://dynamic.hs.fi/2019/karsintakuvat/?_ga=2.73417106.1043337552.1573848580-425762508.1569652028',
       keywords: 'football',
-      user: testUser
+      user: testUser,
+      archived: false,
+      modified: Date.now().toString()
     })
     const testNote = await note.save()
     console.log('Created test note', testNote)
