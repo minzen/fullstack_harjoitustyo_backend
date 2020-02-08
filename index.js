@@ -297,7 +297,7 @@ const resolvers = {
           title: args.title,
           content: args.content,
           keywords: args.keywords,
-          archived: args.archived,
+          archived: false,
           modified: Date.now().toString()
         }
       ).populate('user')
