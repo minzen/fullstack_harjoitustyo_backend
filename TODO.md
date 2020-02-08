@@ -6,6 +6,9 @@
 - Testit
 - Subscriptionit
 - Tsekkaa, kuinka Apollo Server saadaan käyttämään https:ää
+- Github actions: triggeröidään joka pushilla masteriin: deployment to heroku both for the production and for the E2E testing
+- Frontendille actionit, jotka toisaalta deployaavat tuotantoversion (master) käyttöön github-pagesiin, ja toisaalta ajaa E2E-testit (push masteriin/developiin tai mihin branchiin hyvänsä).
+
 
 ## Frontend
 

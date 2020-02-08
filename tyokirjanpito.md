@@ -70,5 +70,5 @@
 | 01.02.2020 | 2 h | CI-toiminnallisuus otettu osittain käyttöön Frontendille. Hirveää säätöä konffauksen kanssa, mutta lopulta deployaus githubin pages -sivustolle toimii. Testien ajo ja Backendin automatisointi vielä puuttuu. |
 | 04.02.2020 | 1 h | Integroitu kirjasto sivutusta (pagination) varten ja tutustuttu dokumentaatioon. Ensimmäiset kokeilut tehty |  
 | 07.02.2020 | 2 h | Korjattu pari E2E-testiä, tutkittu ongelmia, joita on tullut konfiguraatioiden muutoksen jälkeen, lisätty uusi testi kielivalitsimelle. |
-
-yht. 146,5 h
+| 08.02.2020 | 1,5 h | Jatkettu E2E-testien ongelmien selvittämistä. Korjattu vika, jossa muistiinpano jäi piilotetuksi, kun archived-flag asetettiin väärin muistiinpanoa editoitaessa. Luotu alustava suunnitelma Github workflowlle ja actioneille, jotta E2E-testit tulevat ajettua pushattaessa. |
+yht. 148 h
