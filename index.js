@@ -158,6 +158,7 @@ const resolvers = {
       return keywordsArr
     },
     // The method enables resetting the DB to its desired initial state to ensure correct conditions for the E2E tests
+    // This should actually probably be a mutation, so if there's time in the future, change this.
     resetTestDb: async () => {
       console.log(process.env.NODE_ENV)
       if (process.env.NODE_ENV === 'e2e') {
@@ -638,7 +639,7 @@ const server = new ApolloServer({
   context,
   resolvers,
   introspection: true, // enables introspection of the schema
-  playground: true, // enables the actual playground
+  playground: true // enables the actual playground
 })
 
 server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
