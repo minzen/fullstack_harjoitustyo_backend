@@ -1,1 +1,1 @@
-web: node index.js
+web: NODE_ENV=e2e node index.js
