@@ -5,13 +5,13 @@ Tämä sovellus on rakennettu Full Stack Web Development -kurssille. Projekti on
 
 ## Yleistä
 
-"Muistijäljet"-sovellus on tarkoitettu käyttäjälle, joka käyttää monia päätelaitteita ja haluaa päästä helposti käsiksi aiemmin tallennettuihin tietoihin. Sovellus mahdollistaa käyttäjälle helpon tavan tallentaa/linkittää merkityksellistä sisältöä (esim. tärkeät muistiinpanot, linkit resursseihin, joihin käyttäjä haluaa palata myöhemmin, mutta juuri kyseisellä hetkellä ei ole aikaa tai halua tehdä sitä). Kunkin tallennettavan tiedon yhteyteen tallennetaan asiasanoja, joiden mukaan sisältöjä luokitellaan ja on mahdollista hakea myöhemmin. Backend-huolehtii tietojen tallentamisesta dokumenttitietokantaan sekä tarjoaa API:n tietojen hakuun ja tallennukseen.
+"Muistijäljet"-sovellus on tarkoitettu käyttäjälle, jolla on käytössään monia päätelaitteita, ja joka haluaa päästä helposti käsiksi aiemmin tallennettuihin tietoihin. Sovellus mahdollistaa käyttäjälle helpon tavan tallentaa/linkittää merkityksellistä sisältöä (esim. tärkeät muistiinpanot, linkit resursseihin, joihin käyttäjä haluaa palata myöhemmin, mutta juuri kyseisellä hetkellä ei ole aikaa tai halua tehdä sitä). Kunkin tallennettavan tiedon yhteyteen tallennetaan asiasanoja, joiden mukaan sisältöjä luokitellaan ja joilla sisältöä on mahdollista hakea myöhemmin. Backend-huolehtii tietojen tallentamisesta MongoDB Atlas -dokumenttitietokantaan sekä tarjoaa GraphQL -pohjaisen API:n tietojen hakuun ja tallennukseen.
 
 ## Backend-toteutus
 
 Backend-toteutus rakentuu pääosin teknologioiden MongoDB Atlas, Mongoose, GraphQL ja NodeJS päälle. GraphQL:n päälle rakentuva dokumentoitu API on tutkittavissa palvelimella (kts. seuraava kappale).
 
-Backendin (eli GraphQL-API, joka laukkaa ApolloServerin päällä) tämänhetkinen tuotantoversio löytyy osoitteesta: [https://sleepy-woodland-08922.herokuapp.com/graphql](https://sleepy-woodland-08922.herokuapp.com/graphql). E2E-testien suoritusympäristö (kulloinkin tuorein versio backendin develop-haarasta, jota vasten frontendin develop-haaraan pushattu koodi testataan) löytyy osoitteesta: [https://pacific-spire-56237.herokuapp.com/graphql](https://pacific-spire-56237.herokuapp.com/graphql)
+Backendin (eli GraphQL-API, joka laukkaa ApolloServerin päällä) tämänhetkinen tuotantoversio löytyy osoitteesta: [https://sleepy-woodland-08922.herokuapp.com/graphql](https://sleepy-woodland-08922.herokuapp.com/graphql). E2E-testien suoritusympäristö (kulloinkin tuorein versio backendin develop-haarasta, jota vasten frontendin develop-haaraan pushattu koodi testataan) löytyy osoitteesta: [https://pacific-spire-56237.herokuapp.com/graphql](https://pacific-spire-56237.herokuapp.com/graphql). End-to-end-testejä ajettaessa backend käynnistetään komennolla _yarn run e2e_, jolloin käyttöön otetaan keskusmuistissa toimiva MongoDB-instanssi, joka on helppo palauttaa haluttuun tilaan ennen kutakin testiä.
 
 ## Työaikakirjanpito
 
