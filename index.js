@@ -36,7 +36,7 @@ const startInMemoryDb = async () => {
   try {
     const mongod = await new MongoMemoryServer()
     uri = await mongod.getConnectionString()
-    console.log('uri', uri)
+    console.log('In-Memory DB uri', uri)
     await mongoose.connect(uri, mongooseOpts)
     console.log('connected to the in-memory MongoDB')
   } catch (e) {
@@ -90,7 +90,6 @@ const startDb = async () => {
   }
 }
 
-console.log('NODE_ENV', process.env.NODE_ENV)
 // If the environment is "e2e" we want to use the in-memory mongoDB for testing
 // start and initialize a database
 if (process.env.NODE_ENV === 'e2e') {
