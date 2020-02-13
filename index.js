@@ -160,7 +160,6 @@ const resolvers = {
     // The method enables resetting the DB to its desired initial state to ensure correct conditions for the E2E tests
     // This should actually probably be a mutation, so if there's time in the future, change this.
     resetTestDb: async () => {
-      console.log(process.env.NODE_ENV)
       if (process.env.NODE_ENV === 'e2e') {
         console.log(
           'resetTestDb(): resetting the database by removing the users and the notes'
@@ -173,7 +172,9 @@ const resolvers = {
         await initE2eDb()
         return true
       } else {
-        console.log('resetTestDb() is available only for the e2e mode')
+        console.log(
+          'resetTestDb() is available only for the e2e mode, doing nothing'
+        )
         return false
       }
     },
@@ -424,7 +425,7 @@ const resolvers = {
       const typedPwd = args.password
 
       const user = await User.findOne({ email: typedEmail })
-      console.log('user', user)
+      // console.log('user', user)
       if (!user) {
         console.log('invalid username or password')
         throw new UserInputError('wrong credentials')
@@ -528,7 +529,7 @@ const context = async ({ req }) => {
         console.log('missing or invalid token')
       } else {
         currentUser = await User.findById(decodedToken.id)
-        console.log('user', currentUser, ' set as currentUser')
+        // console.log('user', currentUser, ' set as currentUser')
       }
     } catch (e) {
       console.log('Error with token handling', e)
