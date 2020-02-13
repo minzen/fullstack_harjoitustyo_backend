@@ -31,7 +31,7 @@ const main = async (toAddress, subject, messageBody, messageBodyHtml) => {
 
   let transporter = nodemailer.createTransport({
     host: process.env.SMTP_SERVER,
-    port: process.env.PORT,
+    port: process.env.SMTP_PORT,
     secure: true,
     auth: {
       user: process.env.SMTP_USER,
