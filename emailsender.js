@@ -39,15 +39,18 @@ const main = async (toAddress, subject, messageBody, messageBodyHtml) => {
     }
   })
 
-  let info = await transporter.sendMail({
-    from: 'Memory Tracks <do.not.reply@INVALID>',
-    to: toAddress,
-    subject: subject,
-    text: messageBody,
-    html: messageBodyHtml
-  })
-
-  console.log('Message sent: %s', info.messageId)
+  try {
+    let info = await transporter.sendMail({
+      from: 'Memory Tracks <do.not.reply@INVALID>',
+      to: toAddress,
+      subject: subject,
+      text: messageBody,
+      html: messageBodyHtml
+    })
+    console.log('Message sent: %s', info.messageId)
+  } catch (error) {
+    console.log('Error when sending email.', error)
+  }
 }
 
 exports.main = main
