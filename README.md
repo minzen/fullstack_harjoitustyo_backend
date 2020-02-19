@@ -1,30 +1,40 @@
-# Helsingin yliopiston Full Stack Web Development -kurssin harjoitustyö "Muistijäljet"
+# Project work "Memory tracks" for the course Full Stack Web Development at University of Helsinki
 
-Kts. https://courses.helsinki.fi/en/aytkt21010/129098202 ja https://github.com/fullstackopen-2019/misc/blob/master/projekti.md
-Tämä sovellus on rakennettu Full Stack Web Development -kurssille. Projekti on jaettu kahteen kolmeen eri repositoryyn: [ensimmäisessä Backend-toteutus](https://github.com/minzen/fullstack_harjoitustyo_backend) ja [toisessa normaali Frontend](https://github.com/minzen/fullstack_harjoitustyo_frontend) ja [kolmannessa](https://github.com/minzen/fullstackharjoitustyoreactnative) kokeellinen React Native -toteutus.
+See [https://courses.helsinki.fi/en/aytkt21010/129098202](https://courses.helsinki.fi/en/aytkt21010/129098202) and [https://github.com/fullstackopen-2019/misc/blob/master/projekti.md](https://github.com/fullstackopen-2019/misc/blob/master/projekti.md) for the reference regarding the course information.
 
-## Yleistä
+The project has been implemented in three different git repositories: [the first one contains the backend implementation on top of NodeJS and GraphQL (this)](https://github.com/minzen/fullstack_harjoitustyo_backend), [the second repository has the React JS based frontend implementation](https://github.com/minzen/fullstack_harjoitustyo_frontend) and [the third one has the experimental React Native implementation for iOS and Android mobile devices](https://github.com/minzen/fullstackharjoitustyoreactnative).
 
-"Muistijäljet"-sovellus on tarkoitettu käyttäjälle, joka käyttää monia päätelaitteita ja haluaa päästä helposti käsiksi aiemmin tallennettuihin tietoihin. Sovellus mahdollistaa käyttäjälle helpon tavan tallentaa/linkittää merkityksellistä sisältöä (esim. tärkeät muistiinpanot, linkit resursseihin, joihin käyttäjä haluaa palata myöhemmin, mutta juuri kyseisellä hetkellä ei ole aikaa tai halua tehdä sitä). Kunkin tallennettavan tiedon yhteyteen tallennetaan asiasanoja, joiden mukaan sisältöjä luokitellaan ja on mahdollista hakea myöhemmin. Backend-huolehtii tietojen tallentamisesta dokumenttitietokantaan sekä tarjoaa API:n tietojen hakuun ja tallennukseen.
+## General
 
-## Backend-toteutus
+The application "Memory tracks" is designated for a user who utilizes Internet services with multiple devices and wants to easily access the previously store data. The application enables an easy way of storing/linking meaningful content (e.g. important notes, links to web resources that the user wants to have a look at a bit later). The notes can be stored, classified and searched by using keywords. The frontend takes care of fetching and presenting the information obtained from the API provided by the backend.
 
-Backend-toteutus rakentuu pääosin teknologioiden MongoDB Atlas, Mongoose, GraphQL ja NodeJS päälle. GraphQL:n päälle rakentuva dokumentoitu API on tutkittavissa palvelimella (kts. seuraava kappale).
+## Backend implementation
 
-## Backendin buildaus ja ajo
+The backend implementation has been mostly built on the following technologies NodeJS, MongoDB Atlas, Mongoose, and GraphQL (Apollo Server). The API built on top of GraphQL can be used directly on the server (see the following section).
 
-### Järjestelmävaatimukset
+## Build and execution
 
-- nodejs (esim. v.10.19.0), yarn/npm asennettu
-- tietokanta esim. MongoDB Atlas (yhteys konfiguroidaan ympäristömuuttujan avulla)
+### System requirements
 
-### Sovelluksen buildaus
+- nodejs (e.g. v.10.19.0), yarn/npm installed
+- a database e.g. in MongoDB Atlas (the connection string is configured as environment variable)
 
-- suorita komento _yarn install_ asentaaksesi vaaditut riippuvuudet
-- backendin tuotantoversio ajetaan komennolla _yarn start_.
+### Building the application
 
-Backendin (eli GraphQL-API, joka laukkaa ApolloServerin päällä) tämänhetkinen tuotantoversio löytyy osoitteesta: [https://sleepy-woodland-08922.herokuapp.com/graphql](https://sleepy-woodland-08922.herokuapp.com/graphql). E2E-testien suoritusympäristö (kulloinkin tuorein versio backendin develop-haarasta, jota vasten frontendin develop-haaraan pushattu koodi testataan) löytyy osoitteesta: [https://pacific-spire-56237.herokuapp.com/graphql](https://pacific-spire-56237.herokuapp.com/graphql)
+- execute the command _yarn install_ to install the required dependencies
+- the production version of the backend is run by invoking the command _yarn start_.
 
-## Työaikakirjanpito
+The production version of the backend (i.e. the GraphQL API running on top of ApolloServer) resides at [https://sleepy-woodland-08922.herokuapp.com/graphql](https://sleepy-woodland-08922.herokuapp.com/graphql). The run environment for end-to-end tests (always the most current version of the develop branch of the backend, against which the frontend code pushed to its develop branch is tested) is running at: [https://pacific-spire-56237.herokuapp.com/graphql](https://pacific-spire-56237.herokuapp.com/graphql)
 
-[Työaikakirjanpito](tyokirjanpito.md)
+## Used technologies
+
+- NodeJS
+- GraphQL + Apollo Server and other Apollo related libraries
+- ESLint
+- Mongoose
+- MongoDB Atlas
+- Nodemailer
+
+## Time keeping
+
+[Time keeping for the project work](tyokirjanpito.md)
