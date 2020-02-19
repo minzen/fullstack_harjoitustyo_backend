@@ -11,6 +11,18 @@ Tämä sovellus on rakennettu Full Stack Web Development -kurssille. Projekti on
 
 Backend-toteutus rakentuu pääosin teknologioiden MongoDB Atlas, Mongoose, GraphQL ja NodeJS päälle. GraphQL:n päälle rakentuva dokumentoitu API on tutkittavissa palvelimella (kts. seuraava kappale).
 
+## Backendin buildaus ja ajo
+
+### Järjestelmävaatimukset
+
+- nodejs (esim. v.10.19.0), yarn/npm asennettu
+- tietokanta esim. MongoDB Atlas (yhteys konfiguroidaan ympäristömuuttujan avulla)
+
+### Sovelluksen buildaus
+
+- suorita komento _yarn install_ asentaaksesi vaaditut riippuvuudet
+- backendin tuotantoversio ajetaan komennolla _yarn start_.
+
 Backendin (eli GraphQL-API, joka laukkaa ApolloServerin päällä) tämänhetkinen tuotantoversio löytyy osoitteesta: [https://sleepy-woodland-08922.herokuapp.com/graphql](https://sleepy-woodland-08922.herokuapp.com/graphql). E2E-testien suoritusympäristö (kulloinkin tuorein versio backendin develop-haarasta, jota vasten frontendin develop-haaraan pushattu koodi testataan) löytyy osoitteesta: [https://pacific-spire-56237.herokuapp.com/graphql](https://pacific-spire-56237.herokuapp.com/graphql)
 
 ## Työaikakirjanpito
