@@ -2,7 +2,11 @@ const {
   ApolloServer,
   UserInputError,
   AuthenticationError
-} = require('apollo-server')
+} = require('apollo-server-express')
+const { createApolloFetch } = require('apollo-fetch')
+const fetch = createApolloFetch({
+  uri: 'http://localhost:4000/graphql'
+})
 require('dotenv').config()
 const { typeDefs } = require('./typeDefs')
 const User = require('./models/user')
@@ -16,7 +20,8 @@ const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 const emailsender = require('./emailsender')
 const NOT_AUTHENTICATED = 'not authenticated'
-
+const express = require('express')
+const app = express()
 const createPwdHash = async password => {
   const saltRounds = 10
   return await bcrypt.hash(password, saltRounds)
@@ -153,7 +158,7 @@ const resolvers = {
           }
         })
       }
-      console.log(keywordsArr)
+      //console.log(keywordsArr)
       return keywordsArr
     },
     // The method enables resetting the DB to its desired initial state to ensure correct conditions for the E2E tests
@@ -220,8 +225,6 @@ const resolvers = {
       }
       return user
     }
-
-    // TODO: Add queries for: getNotesByUserAndKeyword etc.
   },
   Mutation: {
     // TODO: tests
@@ -553,12 +556,7 @@ const sendEmailAccountCreatedShouldBeActivated = async user => {
       'No auth token available, cannot proceed with the registration'
     )
   }
-  //TODO: Refactor this
-  let queryStr =
-    'http://localhost:4000/graphql?query={verifyAccount(token:%22' +
-    user.authToken +
-    '%22){email}}'
-  const confirmationLink = queryStr
+  const confirmationLink = 'http://localhost:4000/verify/' + user.authToken
   console.log('confirmation link', confirmationLink)
   const toAddress = user.email
   const subject = 'A Memory Tracks account created'
@@ -642,6 +640,41 @@ const server = new ApolloServer({
   playground: true // enables the actual playground
 })
 
-server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
-  console.log(`Server ready at ${url}`)
+server.applyMiddleware({ app })
+//server.applyMiddleware({ app, path: '/graphql' })
+
+// This is a separate endpoint used for verifying the user email by checking whether the set token is there.
+// This has been implemented separately as
+app.get('/verify/:token', (request, response) => {
+  console.log('verifyAccount, request.params:', request.params)
+  const token = request.params.token
+  if (!token) {
+    response.status(404).end()
+  }
+
+  const loginLink = '<a href="http://localhost:3000">log in</a>'
+  const confirmation =
+    '<p>has been activated. You may now ' +
+    loginLink +
+    ' with your credentials.</p>'
+  const verifyAccountQuery = '{ verifyAccount(token:"' + token + '"){email} }'
+  // {verifyAccount(token:"f7dc9c00df8fcc2d05dd937d7accadda614fbc34"){email}}
+  console.log(verifyAccountQuery)
+  let email
+  fetch({ query: verifyAccountQuery })
+    .then(res => {
+      console.log('verifyAccount', res)
+      console.log('res.body', res.body)
+      email = res.data.verifyAccount.email
+      const confirmationMsg = '<p>[Account: ' + email + ']' + confirmation
+      response.send(confirmationMsg)
+    })
+    .catch(error => {
+      console.log(error)
+      response.json(error)
+    })
+})
+
+app.listen({ port: process.env.PORT || 4000 }, () => {
+  console.log('Server ready at http://localhost:4000/graphql')
 })
