@@ -59,3 +59,5 @@
 - Toteuta kauniimpi wait-indikaattori
 - Avaa rekisteröintinäkymä expandoituna, kun klikataan register-buttonia
 - User input sanitization
+- Testaa kaikki vielä kerran
+- Kirjoita Matille viesti ja kiitä vuolaasti kurssista

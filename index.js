@@ -556,7 +556,8 @@ const sendEmailAccountCreatedShouldBeActivated = async user => {
       'No auth token available, cannot proceed with the registration'
     )
   }
-  const confirmationLink = 'http://localhost:4000/verify/' + user.authToken
+  const backendUri = process.env.BACKEND_SERVER_URI
+  const confirmationLink = backendUri + '/verify/' + user.authToken
   console.log('confirmation link', confirmationLink)
   const toAddress = user.email
   const subject = 'A Memory Tracks account created'
@@ -588,36 +589,43 @@ const sendEmailAccountCreatedShouldBeActivated = async user => {
 const sendEmailAccountConfirmed = async user => {
   const toAddress = user.email
   const subject = 'A Memory Tracks account confirmed'
+  const frontendUri = process.env.FRONTEND_SERVER_URI
   const messageBody =
     'Welcome to Memory Tracks! Welcome, ' +
     user.givenname +
     ' ' +
     user.surname +
-    '!, your account has been created and you may now log in with your credentials. Best Regards, Memory Tracks support team'
+    '!, your account has been created and you may now log in at (' +
+    frontendUri +
+    ') with your credentials. \nBest Regards, \nMemory Tracks support team'
   const messageBodyHtml =
     '<h1>Welcome to Memory Tracks!</h1> <p>Welcome, <strong>' +
     user.givenname +
     ' ' +
     user.surname +
-    '</strong>!</p><p>Your account has been created and you may now <a href="http://localhost:3000">log in</a> with your credentials.</p><p>Best Regards, <br/>Memory Tracks support team</p>'
+    '</strong>!</p><p>Your account has been created and you may now <a href="' +
+    frontendUri +
+    '">log in</a> with your credentials.</p><p>Best Regards, <br/>Memory Tracks support team</p>'
   // Proceed with the actual send
   await emailsender.main(toAddress, subject, messageBody, messageBodyHtml)
 }
 
 const sendEmailPasswordForgotten = async user => {
   const authToken = user.authToken
-  const passwordResetLink =
-    'http://localhost:3000/passwordreset?token=' + authToken
+  const frontendUri = process.env.FRONTEND_SERVER_URI
+  const passwordResetLink = frontendUri + '/passwordreset?token=' + authToken
   const toAddress = user.email
   const subject = '[Memory Tracks] Password reset request'
   const messageBody =
     'Password reset\nSomeone using your email (hopefully you!) has requested for a password reset. You can confirm the reset and set a new password by using the following link ' +
     passwordResetLink +
-    '.'
+    '. ' +
+    '\nBest Regards, \nMemory Tracks support team'
   const messageBodyHtml =
     '<h1>Password reset</h1><p>Someone using your email (hopefully you!) has requested for a password reset. You can confirm the reset and set a new password by using the following link ' +
     passwordResetLink +
-    '.</p>'
+    '.</p>' +
+    '<p>Best Regards, <br/>Memory Tracks support team</p>'
   await emailsender.main(toAddress, subject, messageBody, messageBodyHtml)
 }
 
@@ -641,7 +649,17 @@ const server = new ApolloServer({
 })
 
 server.applyMiddleware({ app })
-//server.applyMiddleware({ app, path: '/graphql' })
+
+const buildConfirmationText = email => {
+  const frontendUri = process.env.FRONTEND_SERVER_URI
+  const loginLink = '<a href="' + frontendUri + '">log in</a>'
+  const confirmation =
+    '<p>has been activated. You may now ' +
+    loginLink +
+    ' with your credentials.</p>'
+  const confirmationMsg = '<p>[Account: ' + email + ']' + confirmation
+  return confirmationMsg
+}
 
 // This is a separate endpoint used for verifying the user email by checking whether the set token is there.
 // This has been implemented separately as
@@ -651,23 +669,14 @@ app.get('/verify/:token', (request, response) => {
   if (!token) {
     response.status(404).end()
   }
-
-  const loginLink = '<a href="http://localhost:3000">log in</a>'
-  const confirmation =
-    '<p>has been activated. You may now ' +
-    loginLink +
-    ' with your credentials.</p>'
   const verifyAccountQuery = '{ verifyAccount(token:"' + token + '"){email} }'
-  // {verifyAccount(token:"f7dc9c00df8fcc2d05dd937d7accadda614fbc34"){email}}
-  console.log(verifyAccountQuery)
   let email
   fetch({ query: verifyAccountQuery })
     .then(res => {
       console.log('verifyAccount', res)
       console.log('res.body', res.body)
       email = res.data.verifyAccount.email
-      const confirmationMsg = '<p>[Account: ' + email + ']' + confirmation
-      response.send(confirmationMsg)
+      response.send(buildConfirmationText(email))
     })
     .catch(error => {
       console.log(error)
@@ -676,5 +685,8 @@ app.get('/verify/:token', (request, response) => {
 })
 
 app.listen({ port: process.env.PORT || 4000 }, () => {
-  console.log('Server ready at http://localhost:4000/graphql')
+  console.log('FrontendServer running at ', process.env.FRONTEND_SERVER_URI)
+  console.log(
+    'Apollo/Express server (this instance) running at http://localhost:4000/graphql'
+  )
 })
