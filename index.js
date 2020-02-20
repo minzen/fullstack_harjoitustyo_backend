@@ -688,6 +688,6 @@ app.listen({ port: process.env.PORT || 4000 }, () => {
   console.log('FrontendServer running at ', process.env.FRONTEND_SERVER_URI)
   console.log(
     'Apollo/Express server (this instance) running at ',
-    process.env.FRONTEND_SERVER_URI
+    process.env.BACKEND_SERVER_URI
   )
 })
