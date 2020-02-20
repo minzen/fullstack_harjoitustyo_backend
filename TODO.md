@@ -34,15 +34,9 @@
 - Internationalization, esim. https://github.com/react-native-community/react-native-localize
 - Datan haku ApolloClientilla API:n kautta
 - Näkymien suunnittelu:
-  - muistiinpanojen listaus
-  - muistiinpanojen lisäys
-  - kirjautuminen
   - tietojen haku-näkymä (voi olla yhdistetty muistiinpanojen listaus -näkymään)
   - Käyttäjäprofiili
   - Käyttäjätilin rekisteröinti-näkymä
-- Header ja menu
-- Tyylien käyttö
-- React Navigation käyttöön (https://facebook.github.io/react-native/docs/navigation)
 - muistiinpanojen editointi ja poistaminen
 - suosikkien asettaminen
 - toteuta unit- ja e2e-testit
@@ -54,3 +48,14 @@
 - Graafiset viilaukset (himmennetyt näkymät, popup-efektit)
 - Muistiinpanojen jakaminen ja kommentointi
 - Lisää e2e-testejä
+
+## Yleistä
+
+- Ohjeiden parantaminen
+- Ulkoasuun liittyvät viilaukset
+- React Native -osion muuttaminen käyttämään typescriptiä (projekti luotu jo alunperin ts:lle)
+- Backendiin express käyttöön parille routelle (sähköpostiosoitteen verifiointi esim.)
+- Korjaa sähköpostin linkit: muodostettava serverikohtaisesti URI
+- Toteuta kauniimpi wait-indikaattori
+- Avaa rekisteröintinäkymä expandoituna, kun klikataan register-buttonia
+- User input sanitization
