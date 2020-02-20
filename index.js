@@ -5,7 +5,7 @@ const {
 } = require('apollo-server-express')
 const { createApolloFetch } = require('apollo-fetch')
 const fetch = createApolloFetch({
-  uri: 'http://localhost:4000/graphql'
+  uri: process.env.BACKEND_SERVER_URI
 })
 require('dotenv').config()
 const { typeDefs } = require('./typeDefs')
