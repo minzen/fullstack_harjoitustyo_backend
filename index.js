@@ -2,11 +2,7 @@ const {
   ApolloServer,
   UserInputError,
   AuthenticationError
-} = require('apollo-server-express')
-const { createApolloFetch } = require('apollo-fetch')
-const fetch = createApolloFetch({
-  uri: process.env.BACKEND_SERVER_URI
-})
+} = require('apollo-server')
 require('dotenv').config()
 const { typeDefs } = require('./typeDefs')
 const User = require('./models/user')
@@ -20,8 +16,6 @@ const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 const emailsender = require('./emailsender')
 const NOT_AUTHENTICATED = 'not authenticated'
-const express = require('express')
-const app = express()
 const createPwdHash = async password => {
   const saltRounds = 10
   return await bcrypt.hash(password, saltRounds)
@@ -213,8 +207,6 @@ const resolvers = {
     verifyAccount: async (root, args) => {
       console.log('verifyAccount, args:', args)
       const token = args.token
-      console.log('token', token)
-
       const user = await User.findOne({ authToken: token })
       console.log('setting account activated for user', user)
       if (user) {
@@ -222,12 +214,12 @@ const resolvers = {
         await user.save()
         console.log('Account activated for', user)
         await sendEmailAccountConfirmed(user)
+        return user
       }
-      return user
+      return null
     }
   },
   Mutation: {
-    // TODO: tests
     // The method enables adding a note by an authenticated user
     addNote: async (root, args, context) => {
       console.log('addNote', args)
@@ -557,7 +549,10 @@ const sendEmailAccountCreatedShouldBeActivated = async user => {
     )
   }
   const backendUri = process.env.BACKEND_SERVER_URI
-  const confirmationLink = backendUri + '/verify/' + user.authToken
+  let confirmationLink = backendUri + '?query={verifyAccount(token:%22' +
+  user.authToken +
+  '%22){email}}'
+
   console.log('confirmation link', confirmationLink)
   const toAddress = user.email
   const subject = 'A Memory Tracks account created'
@@ -644,47 +639,11 @@ const server = new ApolloServer({
   typeDefs,
   context,
   resolvers,
-  introspection: true, // enables introspection of the schema
-  playground: true // enables the actual playground
+  // introspection: true, // enables introspection of the schema
+  playground: false
 })
 
-server.applyMiddleware({ app })
-
-const buildConfirmationText = email => {
-  const frontendUri = process.env.FRONTEND_SERVER_URI
-  const loginLink = '<a href="' + frontendUri + '">log in</a>'
-  const confirmation =
-    '<p>has been activated. You may now ' +
-    loginLink +
-    ' with your credentials.</p>'
-  const confirmationMsg = '<p>[Account: ' + email + ']' + confirmation
-  return confirmationMsg
-}
-
-// This is a separate endpoint used for verifying the user email by checking whether the set token is there.
-// This has been implemented separately as
-app.get('/verify/:token', (request, response) => {
-  console.log('verifyAccount, request.params:', request.params)
-  const token = request.params.token
-  if (!token) {
-    response.status(404).end()
-  }
-  const verifyAccountQuery = '{ verifyAccount(token:"' + token + '"){email} }'
-  let email
-  fetch({ query: verifyAccountQuery })
-    .then(res => {
-      console.log('verifyAccount', res)
-      console.log('res.body', res.body)
-      email = res.data.verifyAccount.email
-      response.send(buildConfirmationText(email))
-    })
-    .catch(error => {
-      console.log(error)
-      response.json(error)
-    })
-})
-
-app.listen({ port: process.env.PORT || 4000 }, () => {
+server.listen({ port: process.env.PORT || 4000 }, () => {
   console.log('FrontendServer running at ', process.env.FRONTEND_SERVER_URI)
   console.log(
     'Apollo/Express server (this instance) running at ',
