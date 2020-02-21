@@ -573,9 +573,9 @@ const sendEmailAccountCreatedShouldBeActivated = async user => {
     user.surname +
     '! </h1>' +
     '<p>Your account has been created, but it has to be activated before you can log in with your credentials. ' +
-    'To accomplish this, please visit ' +
+    'To accomplish this, please open <a href="' +
     confirmationLink +
-    ' by using your Web browser to activate your account.</p>' +
+    '">this link</a> by using your Web browser to activate your account.</p>' +
     '<p><strong>Best Regards, <br/>Memory Tracks support team</strong></p>'
   // Proceed with the actual send
   await emailsender.main(toAddress, subject, messageBody, messageBodyHtml)
@@ -617,9 +617,9 @@ const sendEmailPasswordForgotten = async user => {
     '. ' +
     '\nBest Regards, \nMemory Tracks support team'
   const messageBodyHtml =
-    '<h1>Password reset</h1><p>Someone using your email (hopefully you!) has requested for a password reset. You can confirm the reset and set a new password by using the following link ' +
+    '<h1>Password reset</h1><p>Someone using your email (hopefully you!) has requested for a password reset. You can confirm the reset and set a new password by using <a href="' +
     passwordResetLink +
-    '.</p>' +
+    '">this link</a>.</p>' +
     '<p>Best Regards, <br/>Memory Tracks support team</p>'
   await emailsender.main(toAddress, subject, messageBody, messageBodyHtml)
 }
