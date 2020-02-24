@@ -51,13 +51,6 @@
 
 ## Yleistä
 
-- Ohjeiden parantaminen
-- Ulkoasuun liittyvät viilaukset
 - React Native -osion muuttaminen käyttämään typescriptiä (projekti luotu jo alunperin ts:lle)
-- Backendiin express käyttöön parille routelle (sähköpostiosoitteen verifiointi esim.)
-- Korjaa sähköpostin linkit: muodostettava serverikohtaisesti URI
-- Toteuta kauniimpi wait-indikaattori
-- Avaa rekisteröintinäkymä expandoituna, kun klikataan register-buttonia
 - User input sanitization
 - Testaa kaikki vielä kerran
-- Kirjoita Matille viesti ja kiitä vuolaasti kurssista
