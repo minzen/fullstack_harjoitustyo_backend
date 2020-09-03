@@ -13,7 +13,7 @@
   "author": "Feetu Nyrhinen <feetu.nyrhinen@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "apollo-server": "^2.9.7",
+    "apollo-server": "^2.14.2",
     "bcrypt": "^5.0.0",
     "crossenv": "^0.0.2-security",
     "dotenv": "^8.2.0",
